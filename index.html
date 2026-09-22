@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sorteo - Prototipo</title>
+  <style>
+    :root {
+      --primary: #5b4bdb;
+      --primary-dark: #4939c8;
+      --bg: #f5f6fa;
+      --card: #ffffff;
+      --text: #171923;
+      --muted: #70758a;
+      --border: #e5e6ee;
+      --sold: #e8e9ef;
+      --selected: #5b4bdb;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    button, input {
+      font: inherit;
+    }
+
+    .header {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+      max-width: 1180px;
+      margin: auto;
+      min-height: 82px;
+      padding: 14px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    /* LUGAR PARA EL LOGO */
+    .logo {
+      width: 180px;
+      height: 55px;
+      border: 2px dashed #c9cad5;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: bold;
+      background: #fafafd;
+    }
+
+    .admin-button {
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 9px;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .admin-button:hover {
+      background: #f7f7fb;
+    }
+
+    main {
+      max-width: 1180px;
+      margin: auto;
+      padding: 35px 22px 80px;
+    }
+
+    .draw-number {
+      text-align: center;
+      color: var(--primary);
+      font-weight: 800;
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 9px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: clamp(32px, 5vw, 52px);
+      margin: 0;
+      letter-spacing: -1.5px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: var(--muted);
+      max-width: 680px;
+      margin: 14px auto 0;
+      line-height: 1.5;
+    }
+
+    .section {
+      margin-top: 38px;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 25px;
+    }
+
+    .section-title p {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* PREMIOS */
+    .prizes {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .prize {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(25, 28, 45, .06);
+    }
+
+    .prize-image {
+      height: 220px;
+      background: #eeeef4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #8a8d9e;
+      font-size: 14px;
+      font-weight: bold;
+      /* ACÁ IRÁ LA FOTO DEL PREMIO */
+    }
+
+    .prize-content {
+      padding: 18px;
+    }
+
+    .prize-position {
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 7px;
+    }
+
+    .prize-content h3 {
+      margin: 0 0 7px;
+      font-size: 21px;
+    }
+
+    .prize-content p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    /* NUMEROS */
+    .numbers-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      padding: 22px;
+      box-shadow: 0 8px 25px rgba(25, 28, 45, .06);
+    }
+
+    .number-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 17px;
+    }
+
+    .range {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .search {
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 10px 12px;
+      width: 230px;
+      outline: none;
+    }
+
+    .search:focus {
+      border-color: var(--primary);
+    }
+
+    .numbers {
+      display: grid;
+      grid-template-columns: repeat(10, minmax(48px, 1fr));
+      gap: 7px;
+      max-height: 480px;
+      overflow-y: auto;
+      padding: 2px;
+    }
+
+    .number {
+      min-height: 42px;
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .number:hover:not(.sold) {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .number.sold {
+      background: var(--sold);
+      color: #9699a8;
+      cursor: not-allowed;
+    }
+
+    .number.selected {
+      background: var(--selected);
+      color: #fff;
+      border-color: var(--selected);
+    }
+
+    .legend {
+      margin-top: 15px;
+      display: flex;
+      gap: 17px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend i {
+      width: 12px;
+      height: 12px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      display: inline-block;
+    }
+
+    .available-dot { background: #fff; }
+    .sold-dot { background: var(--sold); }
+    .selected-dot { background: var(--selected); border-color: var(--selected) !important; }
+
+    /* ADMIN */
+    .admin-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 17, 30, .55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 50;
+    }
+
+    .admin-overlay.show {
+      display: flex;
+    }
+
+    .admin-login {
+      width: min(420px, 100%);
+      background: #fff;
+      border-radius: 17px;
+      padding: 28px;
+      box-shadow: 0 25px 70px rgba(0,0,0,.2);
+    }
+
+    .admin-login h2 {
+      margin: 0 0 8px;
+    }
+
+    .admin-login p {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .admin-login input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 12px;
+      outline: none;
+      margin-bottom: 10px;
+    }
+
+    .admin-login input:focus {
+      border-color: var(--primary);
+    }
+
+    .login-actions {
+      display: flex;
+      gap: 9px;
+      margin-top: 7px;
+    }
+
+    .login-actions button {
+      flex: 1;
+      border-radius: 9px;
+      padding: 11px;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: #fff;
+    }
+
+    .login-actions .enter {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      font-weight: 700;
+    }
+
+    .error {
+      color: #c34848;
+      font-size: 13px;
+      min-height: 18px;
+      margin-top: 7px;
+    }
+
+    /* ADMIN PANEL */
+    .admin-panel {
+      max-width: 1180px;
+      margin: 0 auto 70px;
+      padding: 0 22px;
+      display: none;
+    }
+
+    .admin-panel.show {
+      display: block;
+    }
+
+    .admin-panel-inner {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      padding: 25px;
+    }
+
+    .admin-panel-inner h2 {
+      margin: 0 0 6px;
+    }
+
+    .admin-panel-inner p {
+      color: var(--muted);
+    }
+
+    .admin-form {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 13px;
+      margin-top: 20px;
+    }
+
+    .admin-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .admin-field.full {
+      grid-column: 1 / -1;
+    }
+
+    .admin-field label {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .admin-field input,
+    .admin-field textarea {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      resize: vertical;
+    }
+
+    .admin-note {
+      background: #f7f6ff;
+      border: 1px solid #dfdcfb;
+      color: #5148a1;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 13px;
+      margin-top: 17px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 850px) {
+      .prizes {
+        grid-template-columns: 1fr;
+      }
+
+      .numbers {
+        grid-template-columns: repeat(6, 1fr);
+      }
+    }
+
+    @media (max-width: 520px) {
+      .header-inner {
+        padding: 12px;
+      }
+
+      main {
+        padding: 28px 12px 60px;
+      }
+
+      .logo {
+        width: 135px;
+      }
+
+      .numbers {
+        grid-template-columns: repeat(5, 1fr);
+      }
+
+      .admin-form {
+        grid-template-columns: 1fr;
+      }
+
+      .admin-field.full {
+        grid-column: auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <!-- REEMPLAZAR ESTE BLOQUE POR EL LOGO REAL -->
+    <div class="logo">TU LOGO</div>
+
+    <button class="admin-button" id="openAdmin">Administración</button>
+  </div>
+</header>
+
+<main>
+
+  <div class="draw-number">Sorteo número 001</div>
+
+  <h1>Gran Sorteo de Octubre</h1>
+
+  <p class="subtitle">
+    Elegí tus números para participar. La cantidad total de números de cada sorteo
+    será configurable desde el panel de administración.
+  </p>
+
+  <!-- PREMIOS -->
+  <section class="section">
+    <div class="section-title">
+      <h2>Premios</h2>
+      <p>Conocé los premios de este sorteo</p>
+    </div>
+
+    <div class="prizes">
+
+      <article class="prize">
+        <!-- FOTO PREMIO 1 -->
+        <div class="prize-image">FOTO PREMIO 1</div>
+        <div class="prize-content">
+          <div class="prize-position">1° Premio</div>
+          <h3>$5.000.000</h3>
+          <p>Descripción del primer premio. Acá podremos colocar toda la información necesaria.</p>
+        </div>
+      </article>
+
+      <article class="prize">
+        <!-- FOTO PREMIO 2 -->
+        <div class="prize-image">FOTO PREMIO 2</div>
+        <div class="prize-content">
+          <div class="prize-position">2° Premio</div>
+          <h3>$1.000.000</h3>
+          <p>Descripción del segundo premio y sus condiciones.</p>
+        </div>
+      </article>
+
+      <article class="prize">
+        <!-- FOTO PREMIO 3 -->
+        <div class="prize-image">FOTO PREMIO 3</div>
+        <div class="prize-content">
+          <div class="prize-position">3° Premio</div>
+          <h3>$500.000</h3>
+          <p>Descripción del tercer premio y sus condiciones.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- NUMEROS -->
+  <section class="section">
+    <div class="section-title">
+      <h2>Elegí tu número</h2>
+      <p>Seleccioná uno o varios números disponibles</p>
+    </div>
+
+    <div class="numbers-box">
+
+      <div class="number-info">
+        <div class="range">
+          Números: <strong>0000 - 9999</strong>
+        </div>
+
+        <input
+          class="search"
+          id="search"
+          type="number"
+          min="0"
+          max="9999"
+          placeholder="Buscar número..."
+        >
+      </div>
+
+      <div class="numbers" id="numbers"></div>
+
+      <div class="legend">
+        <span><i class="available-dot"></i> Disponible</span>
+        <span><i class="selected-dot"></i> Seleccionado</span>
+        <span><i class="sold-dot"></i> Vendido</span>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<!-- PANEL ADMINISTRADOR -->
+<section class="admin-panel" id="adminPanel">
+  <div class="admin-panel-inner">
+    <h2>Panel de administración</h2>
+    <p>Prototipo inicial. Más adelante estos datos se guardarán directamente en Firebase.</p>
+
+    <div class="admin-form">
+
+      <div class="admin-field">
+        <label>Número de sorteo</label>
+        <input type="text" value="001">
+      </div>
+
+      <div class="admin-field">
+        <label>Título del sorteo</label>
+        <input type="text" value="Gran Sorteo de Octubre">
+      </div>
+
+      <div class="admin-field">
+        <label>Número inicial</label>
+        <input type="number" value="0">
+      </div>
+
+      <div class="admin-field">
+        <label>Número final</label>
+        <input type="number" value="9999">
+      </div>
+
+      <div class="admin-field full">
+        <label>Descripción del sorteo</label>
+        <textarea rows="4">Descripción del sorteo y reglas principales.</textarea>
+      </div>
+
+    </div>
+
+    <div class="admin-note">
+      En la siguiente etapa conectaremos este panel con Firebase. Ahí podremos crear
+      el sorteo, cargar los premios, subir las fotos, definir la cantidad de números
+      y controlar qué números están disponibles o vendidos.
+    </div>
+  </div>
+</section>
+
+<!-- LOGIN ADMIN -->
+<div class="admin-overlay" id="adminOverlay">
+  <div class="admin-login">
+    <h2>Administración</h2>
+    <p>Ingresá la contraseña para acceder al panel.</p>
+
+    <input id="adminPassword" type="password" placeholder="Contraseña">
+
+    <div class="error" id="loginError"></div>
+
+    <div class="login-actions">
+      <button id="closeAdmin">Cancelar</button>
+      <button class="enter" id="loginButton">Ingresar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  /*
+    PROTOTIPO:
+    - Todavía NO está conectado a Firebase.
+    - Algunos números aparecen como vendidos solamente para mostrar el diseño.
+    - La contraseña de esta demo es: admin123
+    - Esta contraseña NO será utilizada en la versión real.
+      La autenticación real se hará con Firebase Authentication.
+  */
+
+  const totalNumbers = 10000;
+  const soldNumbers = new Set([
+    7, 18, 42, 125, 310, 777, 1024, 1234,
+    2345, 3456, 4567, 5000, 5821, 6123,
+    7001, 8123, 9000, 9876
+  ]);
+
+  const selectedNumbers = new Set();
+
+  const numbersContainer = document.getElementById("numbers");
+  const searchInput = document.getElementById("search");
+
+  function formatNumber(number) {
+    return String(number).padStart(4, "0");
+  }
+
+  function renderNumbers(filter = "") {
+    numbersContainer.innerHTML = "";
+
+    let start = 0;
+    let end = totalNumbers;
+
+    if (filter !== "") {
+      const n = Number(filter);
+      if (!Number.isNaN(n) && n >= 0 && n < totalNumbers) {
+        start = n;
+        end = n + 1;
+      }
+    }
+
+    for (let i = start; i < end; i++) {
+      const button = document.createElement("button");
+      button.className = "number";
+      button.textContent = formatNumber(i);
+
+      if (soldNumbers.has(i)) {
+        button.classList.add("sold");
+        button.disabled = true;
+      }
+
+      if (selectedNumbers.has(i)) {
+        button.classList.add("selected");
+      }
+
+      button.addEventListener("click", () => {
+        if (soldNumbers.has(i)) return;
+
+        if (selectedNumbers.has(i)) {
+          selectedNumbers.delete(i);
+        } else {
+          selectedNumbers.add(i);
+        }
+
+        renderNumbers(searchInput.value);
+      });
+
+      numbersContainer.appendChild(button);
+    }
+  }
+
+  searchInput.addEventListener("input", () => {
+    renderNumbers(searchInput.value);
+  });
+
+  renderNumbers();
+
+  const adminOverlay = document.getElementById("adminOverlay");
+  const adminPanel = document.getElementById("adminPanel");
+  const password = document.getElementById("adminPassword");
+  const error = document.getElementById("loginError");
+
+  document.getElementById("openAdmin").addEventListener("click", () => {
+    adminOverlay.classList.add("show");
+    password.focus();
+  });
+
+  document.getElementById("closeAdmin").addEventListener("click", () => {
+    adminOverlay.classList.remove("show");
+    password.value = "";
+    error.textContent = "";
+  });
+
+  document.getElementById("loginButton").addEventListener("click", login);
+
+  password.addEventListener("keydown", event => {
+    if (event.key === "Enter") login();
+  });
+
+  function login() {
+    if (password.value === "admin123") {
+      adminOverlay.classList.remove("show");
+      adminPanel.classList.add("show");
+      password.value = "";
+      error.textContent = "";
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth"
+      });
+    } else {
+      error.textContent = "Contraseña incorrecta.";
+    }
+  }
+</script>
+
+</body>
+</html>
