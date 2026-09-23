@@ -1,23 +1,605 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sorteo V2</title>
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sorteos Córdoba</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--p:#5b4bdb;--bg:#f5f6fa;--text:#171923;--muted:#70758a;--border:#e5e6ee;--red:#d9363e;--yellow:#ffe9a8}*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}button,input{font:inherit}.header{background:#fff;border-bottom:1px solid var(--border)}.head,main,.admin{max-width:1180px;margin:auto}.head{min-height:80px;padding:12px 22px;display:flex;justify-content:space-between;align-items:center}.logo{width:180px;height:55px;border:2px dashed #bbb;border-radius:10px;display:grid;place-items:center;color:var(--muted);font-size:13px}.adminbtn,.secondary{background:#fff;border:1px solid var(--border);padding:10px 15px;border-radius:9px;cursor:pointer}main{padding:35px 22px 80px}.draw{text-align:center;color:var(--p);font-weight:bold;text-transform:uppercase;letter-spacing:1px}h1{text-align:center;font-size:clamp(32px,5vw,52px);margin:8px 0}.sub{text-align:center;color:var(--muted)}.section{margin-top:38px}.title{text-align:center;margin-bottom:18px}.title h2{margin:0}.title p{color:var(--muted);font-size:14px}.prizes{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.prize,.box,.card,.admininner{background:#fff;border:1px solid var(--border);border-radius:17px;box-shadow:0 8px 25px #0000000d}.photo{height:210px;background:#eee;display:grid;place-items:center;color:#888}.pbody{padding:18px}.pbody h3{margin:5px 0}.pbody p{color:var(--muted);font-size:14px}.box{padding:22px}.toolbar{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}.search{padding:10px;border:1px solid var(--border);border-radius:9px;width:230px}.numbers{display:grid;grid-template-columns:repeat(10,1fr);gap:7px;max-height:470px;overflow:auto}.num{min-height:42px;border:1px solid var(--border);background:#fff;border-radius:7px;font-weight:bold;cursor:pointer}.num.selected{background:var(--p);color:#fff}.num.reserved{background:var(--yellow);color:#705900;border-color:#dfc65e;cursor:not-allowed}.num.sold{background:var(--red);color:#fff;border-color:var(--red);cursor:not-allowed}.legend{margin-top:14px;color:var(--muted);font-size:12px}.checkout{display:grid;grid-template-columns:1fr 350px;gap:22px;margin-top:22px}.card{padding:22px}.form{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field label,.cfg label{font-size:13px;font-weight:bold}.field input,.cfg input{padding:11px;border:1px solid var(--border);border-radius:9px}.full{grid-column:1/-1}.summary{color:var(--muted);font-size:14px;line-height:1.7}.selected{padding:12px;background:#f7f7fa;border-radius:9px;margin:10px 0}.primary{width:100%;border:0;background:var(--p);color:#fff;border-radius:9px;padding:12px;font-weight:bold;cursor:pointer}.admin{display:none;padding:0 22px 70px}.admin.show{display:block}.admininner{padding:24px}.cfgs{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:20px}.cfg{display:flex;flex-direction:column;gap:6px}.cfg.full{grid-column:1/-1}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}.stat{border:1px solid var(--border);padding:16px;border-radius:12px}.stat small{color:var(--muted)}.stat strong{display:block;font-size:24px;margin-top:7px}.notice{margin-top:15px;padding:12px;border-radius:10px;background:#f7f6ff;color:#5148a1;font-size:13px;line-height:1.5}.overlay{position:fixed;inset:0;background:#0008;display:none;place-items:center;z-index:5}.login{background:#fff;padding:28px;border-radius:16px;width:min(400px,90%)}.login input{width:100%;padding:12px;margin:10px 0;border:1px solid var(--border);border-radius:9px}.actions{display:flex;gap:8px}.actions>*{flex:1;padding:11px;border-radius:9px;border:1px solid var(--border);cursor:pointer}.actions .enter{background:var(--p);color:#fff;border-color:var(--p)}@media(max-width:850px){.prizes,.checkout{grid-template-columns:1fr}.numbers{grid-template-columns:repeat(6,1fr)}.stats,.cfgs{grid-template-columns:1fr}}@media(max-width:520px){main,.admin{padding-left:12px;padding-right:12px}.logo{width:135px}.numbers{grid-template-columns:repeat(5,1fr)}.form{grid-template-columns:1fr}.full,.cfg.full{grid-column:auto}}
-</style></head><body>
-<header class="header"><div class="head"><div class="logo">TU LOGO</div><button class="adminbtn" id="open">Administración</button></div></header>
+:root{
+  --bg:#020617;--card:rgba(30,41,59,.75);--text:#f8fafc;--muted:#94a3b8;
+  --primary:#4f46e5;--primary2:#6366f1;--accent:#ef4444;--reserved:#eab308;
+  --selected:#6366f1;--free:#22c55e;--border:rgba(255,255,255,.08);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial,Helvetica,sans-serif}
+button,input,select,textarea{font:inherit}
+header{background:rgba(15,23,42,.88);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.08);position:sticky;top:0;z-index:20}
+.header-inner{max-width:1150px;margin:auto;padding:12px 18px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:48px;height:48px;border:2px solid rgba(99,102,241,.5);border-radius:50%;display:grid;place-items:center;color:#94a3b8;font-size:10px;background:#1e293b}
+.brand strong{font-size:19px}.admin-trigger{width:15px;height:15px;padding:0;border:0;border-radius:50%;background:#d71920;cursor:pointer;box-shadow:none;font-size:0}
+main{max-width:1150px;margin:24px auto;padding:0 18px}
+.hero{text-align:center;margin-bottom:22px}.hero h1{font-size:clamp(34px,5vw,58px);margin:12px 0 8px;line-height:1.05;letter-spacing:-.02em}.hero h2{font-size:22px;margin:6px 0}.hero p{color:var(--muted);max-width:820px;margin:10px auto;line-height:1.65}
+.card{background:var(--card);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:18px}
+.prizes{display:grid;grid-template-columns:minmax(190px,260px) minmax(250px,320px) minmax(190px,260px);justify-content:center;align-items:end;gap:18px;padding:20px 8px 0}.prize{border:1px solid var(--border);border-radius:18px;overflow:hidden;background:linear-gradient(180deg,rgba(30,41,59,.9),rgba(15,23,42,.82));box-shadow:0 18px 45px rgba(0,0,0,.22);position:relative}.prize-img{height:190px;background:linear-gradient(135deg,#e2e8f0,#cbd5e1);display:grid;place-items:center;color:#64748b;font-weight:700}.prize-body{padding:15px}.prize-body h3{margin:0 0 7px}.prize-body p{margin:0;color:#94a3b8;line-height:1.45}.prize:nth-child(1){grid-column:2;grid-row:1;transform:translateY(-22px);border-color:rgba(250,204,21,.4);box-shadow:0 28px 60px rgba(0,0,0,.32),0 0 0 1px rgba(250,204,21,.08)}.prize:nth-child(2){grid-column:1;grid-row:1}.prize:nth-child(3){grid-column:3;grid-row:1}.podium-rank{display:inline-flex;align-items:center;justify-content:center;margin-bottom:9px;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800;background:rgba(99,102,241,.12);color:#a5b4fc;border:1px solid rgba(99,102,241,.22)}.prize:nth-child(1) .podium-rank{background:rgba(250,204,21,.12);color:#fde68a;border-color:rgba(250,204,21,.25)}.extra-prizes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:18px}.extra-prizes .prize:nth-child(n){grid-column:auto;grid-row:auto;transform:none}.extra-prizes .prize-img{height:150px}
+.search-row{display:flex;gap:10px;flex-wrap:wrap}.search-row input{flex:1;min-width:220px;padding:13px;border:1px solid #334155;background:#0f172a;color:#f8fafc;border-radius:10px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:13px 0}.filter{border:1px solid #334155;background:#0f172a;color:#94a3b8;padding:9px 13px;border-radius:9px;cursor:pointer}.filter.active{background:#1e293b;color:#e2e8f0}
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}.legend span{padding:7px 9px;border-radius:7px;font-size:13px}.free{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.2);color:#4ade80}.reserved{background:rgba(234,179,8,.18);color:#facc15}.unavailable{background:rgba(239,68,68,.14);color:#fb7185}.selected{background:var(--selected);color:#fff}
+.numbers{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;max-height:500px;overflow:auto;padding:2px}
+.num{border:1px solid #334155;background:#0f172a;color:#e2e8f0;border-radius:7px;padding:9px 2px;cursor:pointer;font-family:monospace}.num.reserved{background:#eab308;color:#111;border-color:#eab308;cursor:not-allowed}.num.sold{background:#ef4444;color:#fff;border-color:#ef4444;cursor:not-allowed}.num.selected{background:#6366f1;color:#fff;border-color:#6366f1}
+.selection{margin-top:15px;padding:13px;background:rgba(15,23,42,.9);border-radius:10px;border:1px solid #1e293b}.form{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}.form input{padding:12px;border:1px solid #334155;background:#0f172a;color:#f8fafc;border-radius:9px}.primary{width:100%;padding:14px;margin-top:12px;border:0;border-radius:10px;background:linear-gradient(90deg,#22c55e,#14b8a6);color:#020617;font-weight:bold;cursor:pointer}
+.notice{text-align:center;color:#94a3b8;font-size:13px;margin-top:10px}
+.admin-overlay{display:none;position:fixed;inset:0;z-index:100;background:#0008;padding:35px 14px;overflow:auto}.admin-overlay.open{display:flex;justify-content:center;align-items:flex-start}
+.admin-modal{background:#0f172a;border-radius:18px;width:min(1120px,100%);padding:22px;position:relative;box-shadow:0 20px 70px #0005}.close{position:absolute;right:13px;top:10px;border:0;background:#eee;border-radius:50%;width:36px;height:36px;font-size:25px;cursor:pointer}
+.admin-tabs{display:flex;gap:7px;flex-wrap:wrap;border-bottom:1px solid #ddd;padding-bottom:12px;margin-bottom:18px}.tab{border:0;background:#1e293b;color:#94a3b8;padding:10px 12px;border-radius:9px;font-weight:bold;cursor:pointer}.tab.active{background:#4f46e5;color:#fff}.panel{display:none}.panel.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}.grid label,.panel>label{display:block;font-weight:bold}.grid input,.grid select,.panel textarea,.panel input{width:100%;margin-top:6px;padding:11px;border:1px solid #334155;background:#0f172a;color:#f8fafc;border-radius:8px}
+.btn{border:0;border-radius:9px;background:#111;color:#fff;padding:11px 14px;font-weight:bold;cursor:pointer;margin-top:12px}.btn.red{background:#b91c1c}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{padding:15px;text-align:center;border-radius:10px;background:#0f172a;border:1px solid #1e293b}.stat b{display:block;font-size:26px;margin-top:4px}.admin-number-list{display:flex;flex-wrap:wrap;gap:5px;max-height:270px;overflow:auto;margin-top:12px}.badge{padding:6px 8px;border-radius:6px;background:#1e293b;color:#cbd5e1;font-family:monospace}.badge.reserved{background:#eab308;color:#111}.badge.sold{background:#ef4444;color:#fff}.admin-prize{padding:14px;background:#0f172a;border:1px solid #1e293b;border-radius:12px;margin-bottom:10px}.qr{width:180px;height:180px;border:2px dashed #aaa;display:grid;place-items:center;margin-top:14px;color:#888}
+@media(max-width:800px){.prizes{grid-template-columns:1fr 1fr;align-items:stretch}.prize:nth-child(1){grid-column:1 / -1;grid-row:1;transform:none;max-width:360px;width:100%;justify-self:center}.prize:nth-child(2){grid-column:1;grid-row:2}.prize:nth-child(3){grid-column:2;grid-row:2}}@media(max-width:700px){.numbers{grid-template-columns:repeat(5,1fr)}.form{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr}.prizes{grid-template-columns:1fr}.prize:nth-child(1),.prize:nth-child(2),.prize:nth-child(3){grid-column:1;grid-row:auto;max-width:none}.prize:nth-child(1){transform:none}}
+
+.reference-banner{background:linear-gradient(90deg,#0f172a,#1e1b4b,#0f172a);border:1px solid rgba(99,102,241,.2);border-radius:18px;padding:26px;margin-bottom:20px;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.status-pill{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:999px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);color:#a5b4fc;font-size:11px;font-weight:700}
+.status-pill span{width:8px;height:8px;border-radius:50%;background:#34d399;box-shadow:0 0 12px #34d399}
+.hero h1{font-family:Outfit,Inter,Arial,sans-serif;color:#fff}
+.hero h2{font-family:Outfit,Inter,Arial,sans-serif;color:#fff}
+.hero p{color:#cbd5e1}
+.card h2,.card h3{color:#f8fafc}
+.panel p{color:#94a3b8}
+
+
+.share-overlay{display:none;position:fixed;inset:0;z-index:120;background:rgba(2,6,23,.86);backdrop-filter:blur(12px);padding:24px;overflow:auto}
+.share-overlay.open{display:flex;align-items:center;justify-content:center}
+.share-box{width:min(760px,100%);background:#0f172a;border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:18px;box-shadow:0 30px 90px rgba(0,0,0,.45)}
+.share-box h2{margin:4px 0 6px;font-family:Outfit,Inter,sans-serif}.share-box p{color:#94a3b8;margin:0 0 14px}
+.share-card{position:relative;overflow:hidden;border-radius:20px;padding:28px;background:linear-gradient(135deg,#111827 0%,#312e81 55%,#111827 100%);border:1px solid rgba(255,255,255,.14);text-align:center}
+.share-card .share-logo{width:56px;height:56px;border-radius:50%;border:2px solid rgba(255,255,255,.35);display:grid;place-items:center;margin:0 auto 12px;font-size:9px;color:#cbd5e1}
+.share-card .share-small{font-size:12px;letter-spacing:.12em;color:#c7d2fe;font-weight:800}.share-card h3{font:800 clamp(27px,5vw,46px)/1.05 Outfit,Inter,sans-serif;margin:9px 0;color:#fff}.share-card .share-desc{max-width:600px;margin:0 auto 16px;color:#dbeafe;line-height:1.5}.share-card .share-numbers{display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);padding:10px 14px;border-radius:12px;color:#fff;font-weight:800}.share-card .share-footer{margin-top:18px;color:#cbd5e1;font-size:12px}
+.share-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.share-actions .btn{margin-top:0;flex:1;min-width:160px}.btn.green{background:#22c55e;color:#052e16}
+
+
+.admin-trigger{background:#172033!important;color:#475569!important;border:1px solid #243047!important;box-shadow:0 0 0 1px rgba(255,255,255,.01)!important}
+.admin-trigger:hover{background:#1e293b!important;color:#64748b!important}
+.number.free{color:#e2e8f0}
+.number.selected{color:#fff}
+
+.sales-table-wrap{overflow:auto;border:1px solid var(--border);border-radius:14px;background:rgba(2,6,23,.28)}
+.sales-table{width:100%;border-collapse:collapse;min-width:900px}
+.sales-table th,.sales-table td{padding:11px 12px;border-bottom:1px solid rgba(148,163,184,.10);text-align:left;font-size:13px}
+.sales-table th{color:#94a3b8;font-size:11px;text-transform:uppercase;letter-spacing:.06em;background:rgba(15,23,42,.72);position:sticky;top:0}
+.sales-table td{color:#e2e8f0}
+.sales-table tr:last-child td{border-bottom:0}
+.sales-status{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800}
+.sales-status.reserved{background:rgba(234,179,8,.13);color:#fde047;border:1px solid rgba(234,179,8,.25)}
+.sales-status.sold{background:rgba(239,68,68,.13);color:#fca5a5;border:1px solid rgba(239,68,68,.25)}
+.pay-btn{background:#22c55e!important;color:#052e16!important;border:0}
+.pay-btn:disabled{opacity:.55;cursor:not-allowed}
+.sales-empty{text-align:center;color:#64748b;padding:28px}
+.sales-toolbar{display:flex;gap:9px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px}
+.sales-toolbar .hint{margin:0}
+
+
+.pricing-box{margin-top:16px;padding:16px;border:1px solid var(--border);border-radius:14px;background:rgba(2,6,23,.28)}
+.pricing-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.pricing-row{display:grid;grid-template-columns:1fr 1fr auto;gap:9px;align-items:end;margin-bottom:9px}
+.pricing-row label{margin:0}
+.price-total{font-weight:900;font-size:22px;color:#a5b4fc}
+.purchase-total{margin-top:12px;padding:14px 16px;border-radius:14px;background:rgba(79,70,229,.12);border:1px solid rgba(99,102,241,.25);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.purchase-total span:first-child{color:#94a3b8}
+.purchase-total strong{font-size:25px;color:#fff}
+@media(max-width:600px){.pricing-row{grid-template-columns:1fr 1fr}.pricing-row .remove-price{grid-column:1/-1}.purchase-total{align-items:flex-start;flex-direction:column}}
+
+.confirm-step{background:rgba(234,179,8,.08);border:1px solid rgba(234,179,8,.22);padding:12px 14px;border-radius:12px;margin-top:12px;color:#fde68a}
+.danger-zone{border:1px solid rgba(239,68,68,.28)!important;background:rgba(127,29,29,.10)!important}
+.btn-danger{background:#991b1b!important;color:#fee2e2!important;border:1px solid #b91c1c!important}
+.btn-danger:hover{background:#b91c1c!important}
+.delete-warning{padding:16px;border-radius:14px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);color:#fecaca;line-height:1.55}
+</style>
+</head>
+<body>
+<header><div class="header-inner"><div class="brand"><div class="logo">LOGO</div><strong>SORTEOS CÓRDOBA</strong></div><button id="adminTrigger" class="admin-trigger" aria-label="Administrador"></button></div></header>
+
 <main>
-<div class="draw">Sorteo número 001</div><h1>Gran Sorteo de Octubre</h1><p class="sub">Seleccioná tus números y completá tus datos para generar una reserva.</p>
-<section class="section"><div class="title"><h2>Premios</h2><p>Hasta 3 premios configurables</p></div><div class="prizes">
-<article class="prize"><div class="photo">FOTO PREMIO 1</div><div class="pbody"><b>1° PREMIO</b><h3>$5.000.000</h3><p>Descripción del premio.</p></div></article>
-<article class="prize"><div class="photo">FOTO PREMIO 2</div><div class="pbody"><b>2° PREMIO</b><h3>$1.000.000</h3><p>Descripción del premio.</p></div></article>
-<article class="prize"><div class="photo">FOTO PREMIO 3</div><div class="pbody"><b>3° PREMIO</b><h3>$500.000</h3><p>Descripción del premio.</p></div></article></div></section>
-<section class="section"><div class="title"><h2>Elegí tus números</h2><p>0000 - 9999</p></div><div class="box"><div class="toolbar"><b>Números disponibles</b><input class="search" id="search" type="number" min="0" max="9999" placeholder="Buscar número"></div><div class="numbers" id="numbers"></div><div class="legend">⬜ Disponible &nbsp; 🟪 Seleccionado &nbsp; 🟨 Reservado &nbsp; 🟥 Vendido</div></div></section>
-<section class="checkout"><div class="card"><h3>Datos del comprador</h3><p class="summary">Estos datos acompañarán la reserva enviada a WhatsApp.</p><div class="form"><div class="field"><label>Nombre</label><input id="name"></div><div class="field"><label>Apellido</label><input id="last"></div><div class="field"><label>DNI</label><input id="dni" inputmode="numeric"></div><div class="field"><label>Teléfono</label><input id="phone" type="tel"></div></div></div><div class="card"><h3>Reserva</h3><div class="summary">Cantidad seleccionada: <b id="count">0</b></div><div class="selected" id="list">No seleccionaste números.</div><div class="summary">Máximo por usuario: <b id="max">10</b><br>Tiempo de reserva: <b id="hours">6 horas</b></div><button class="primary" id="reserve">Reservar y enviar por WhatsApp</button></div></section>
+<section class="hero reference-banner">
+<div class="status-pill"><span></span> SORTEO NÚMERO 001</div>
+<h1 id="publicTitle">Gran Sorteo</h1>
+<p id="publicDescription">Acá se informa cuándo y cómo se realiza el sorteo, junto con cualquier condición importante para participar.</p>
+</section>
+
+<section class="card">
+<h2 style="text-align:center">Premios</h2>
+<div class="prizes" id="publicPrizes">
+<div class="prize"><div class="prize-img">IMAGEN DEL PREMIO</div><div class="prize-body"><span class="podium-rank">🥇 1° PREMIO</span><h3>Primer premio</h3><p>Descripción del premio principal.</p></div></div>
+<div class="prize"><div class="prize-img">IMAGEN DEL PREMIO</div><div class="prize-body"><span class="podium-rank">🥈 2° PREMIO</span><h3>Segundo premio</h3><p>Descripción del segundo premio.</p></div></div>
+<div class="prize"><div class="prize-img">IMAGEN DEL PREMIO</div><div class="prize-body"><span class="podium-rank">🥉 3° PREMIO</span><h3>Tercer premio</h3><p>Descripción del tercer premio.</p></div></div>
+</div>
+<div id="extraPrizes" class="extra-prizes"></div>
+</section>
+
+<section class="card">
+<h2>Elegí tus números</h2>
+<div class="search-row"><input id="search" placeholder="Buscar número, por ejemplo 0025"></div>
+<div class="filters">
+<button class="filter active" data-filter="all">TODOS</button>
+<button class="filter" data-filter="free">LIBRES</button>
+<button class="filter" data-filter="reserved">RESERVADOS</button>
+<button class="filter" data-filter="sold">VENDIDOS</button>
+</div>
+<div class="legend"><span class="free">LIBRE</span><span class="reserved">RESERVADO</span><span class="unavailable" style="background:rgba(239,68,68,.14);color:#fb7185;border:1px solid rgba(239,68,68,.2)">VENDIDO</span><span class="selected">SELECCIONADO</span></div>
+<div id="numbers" class="numbers"></div>
+<div class="selection"><strong>Números seleccionados:</strong> <span id="selectedList">Ninguno</span></div>
+<div class="form"><input id="name" placeholder="Nombre"><input id="last" placeholder="Apellido"><input id="dni" placeholder="DNI"><input id="phone" placeholder="Teléfono"></div>
+<button id="reserve" class="primary">RESERVAR Y PAGAR</button>
+<div class="notice">Al confirmar, se abrirá WhatsApp con los datos de la reserva.</div>
+</section>
 </main>
-<section class="admin" id="admin"><div class="admininner"><h2>Panel de administración</h2><p class="summary">Configuración del sorteo.</p><div class="cfgs"><div class="cfg"><label>Máximo de números por usuario</label><input id="maxInput" type="number" min="1" value="10"></div><div class="cfg"><label>Tiempo de reserva (horas)</label><input id="hoursInput" type="number" min="1" value="6"></div><div class="cfg full"><label>Número de WhatsApp que recibe las reservas</label><input id="wa" value="5493510000000" placeholder="Ej: 5493511234567"></div></div><button class="primary" style="margin-top:14px;max-width:260px" id="save">Guardar configuración</button><div class="stats"><div class="stat"><small>Disponibles</small><strong id="available">0</strong></div><div class="stat"><small>Reservados</small><strong id="reserved">6</strong></div><div class="stat"><small>Vendidos</small><strong id="sold">18</strong></div></div><div class="notice"><b>Flujo real:</b> la reserva se guardará en Firebase, los números quedarán amarillos durante el tiempo configurado, se enviará la reserva por WhatsApp y, cuando se confirme el pago, administración los pasará a vendidos (rojo). Al vencer una reserva sin pago, volverán automáticamente a disponibles. El bloqueo simultáneo se hará con transacciones de Firebase.</div></div></section>
-<div class="overlay" id="overlay"><div class="login"><h2>Administración</h2><p class="summary">Contraseña de acceso.</p><input id="pass" type="password" placeholder="Contraseña"><div id="err" style="color:#c44;font-size:13px;min-height:18px"></div><div class="actions"><button id="close">Cancelar</button><button class="enter" id="login">Ingresar</button></div></div></div>
+
+<div id="shareOverlay" class="share-overlay">
+  <div class="share-box">
+    <button class="close" id="closeShare">×</button>
+    <h2>¡Reserva registrada!</h2>
+    <p>Ahora podés guardar o compartir esta placa con la información de tu reserva.</p>
+    <div id="shareCard" class="share-card">
+      <div class="share-logo">LOGO</div>
+      <div class="share-small">SORTEO NÚMERO 001</div>
+      <h3 id="shareTitle">Gran Sorteo</h3>
+      <div id="shareDescription" class="share-desc">Información del sorteo.</div>
+      <div id="shareNumbers" class="share-numbers">Números reservados: —</div>
+      <div class="share-footer">SORTEOS CÓRDOBA · Guardá esta imagen como comprobante</div>
+    </div>
+    <div class="share-actions">
+      <button class="btn green" id="downloadShare">DESCARGAR IMAGEN</button>
+      <button class="btn" id="nativeShare">COMPARTIR</button>
+      <button class="btn" id="closeShare2">CERRAR</button>
+    </div>
+  </div>
+</div>
+
+<div id="adminOverlay" class="admin-overlay">
+<div class="admin-modal">
+<button class="close" id="closeAdmin">×</button>
+<div id="loginBox">
+<h2>Administrador</h2><p>Ingresá la contraseña para acceder.</p>
+<input id="adminPass" type="password" placeholder="Contraseña" style="max-width:350px">
+<br><button class="btn" onclick="login()">INGRESAR</button>
+</div>
+
+<div id="adminArea" style="display:none">
+<h2>Panel administrador</h2>
+<div class="admin-tabs">
+<button class="tab active" data-panel="datos">Datos</button><button class="tab" data-panel="numeracion">Numeración</button><button class="tab" data-panel="premios">Premios</button><button class="tab" data-panel="consulta">Números</button><button class="tab" data-panel="descargas">Descargas</button><button class="tab" data-panel="password">Contraseña</button><button class="tab" data-panel="redes">Link y QR</button><button class="tab" data-panel="estados">Estados</button>
+</div>
+
+<div id="datos" class="panel active"><h3>Datos del sorteo</h3><div class="grid">
+<label>Número<input id="adminNumber" value="001"></label><label>Título<input id="adminTitle" value="Gran Sorteo"></label><label>Descripción<input id="adminDescription" value="Acá se informa cuándo y cómo se realiza el sorteo."></label><label>Máximo por persona<input type="number" value="10"></label><label>Horas de reserva<input type="number" value="6"></label><label>WhatsApp<input id="adminWhatsapp" value="5493510000000"></label>
+<label style="grid-column:1/-1">Mensaje de WhatsApp<textarea id="adminWhatsappMessage" rows="6">Hola! Quiero reservar los números {NUMEROS} del Sorteo {SORTEO}.
+
+Nombre: {NOMBRE} {APELLIDO}
+DNI: {DNI}
+Teléfono: {TELEFONO}
+Total a pagar: {TOTAL}
+
+Quedo atento/a a los datos para realizar el pago. ¡Gracias!</textarea></label>
+<div class="hint" style="grid-column:1/-1">Variables disponibles: {SORTEO}, {NUMEROS}, {NOMBRE}, {APELLIDO}, {DNI}, {TELEFONO}. Se reemplazan automáticamente al reservar.</div>
+</div><button class="btn change">GUARDAR CAMBIOS</button></div>
+
+
+<div id="numeracion" class="panel">
+<h3>Programación de números</h3>
+<p>Acá definimos cómo se genera la numeración del sorteo.</p>
+<div class="grid">
+<label>Cantidad total de números<input id="numberTotal" type="number" min="1" value="10000"></label>
+<label>Número inicial<input id="numberStart" type="number" min="0" value="0"></label>
+<label>Número final<input id="numberEnd" type="number" min="0" value="9999"></label>
+<label>Cantidad de dígitos / formato<input id="numberDigits" type="number" min="1" max="8" value="4"></label>
+<label>Prefijo (opcional)<input id="numberPrefix" placeholder="Ej. A-"></label>
+<label>Máximo por compra<input id="numberMaxPurchase" type="number" min="1" value="10"></label>
+<label>Tiempo de reserva (minutos)<input id="numberHoldMinutes" type="number" min="1" value="360"></label>
+</div>
+    <button class="btn" id="addPriceTier">+ AGREGAR PRECIO</button>
+  </div>
+  <div id="priceTiers"></div>
+</div>
+
+</div>
+<div class="notice">Ejemplo con 4 dígitos: 0000, 0001, 0002 ... 9999. En Firebase esta configuración será la que determine los números reales del sorteo.</div>
+<button class="btn change">GUARDAR CONFIGURACIÓN DE NUMERACIÓN</button>
+</div>
+
+<div id="premios" class="panel"><h3>Premios</h3><p>Agregá todos los premios que quieras.</p><div id="prizeList"></div><button id="addPrize" class="btn">+ AGREGAR PREMIO</button><button class="btn change">GUARDAR PREMIOS</button></div>
+
+<div id="consulta" class="panel"><h3>Consultar números</h3><div class="stats"><div class="stat">LIBRES<b id="freeCount">0</b></div><div class="stat">RESERVADOS<b id="reservedCount">0</b></div><div class="stat">VENDIDOS<b id="soldCount">0</b></div></div><div class="admin-number-list" id="adminNumbers"></div></div>
+
+<div id="descargas" class="panel"><h3>Descargar información</h3><div class="grid"><button class="btn change">DESCARGAR TODOS</button><button class="btn change">DESCARGAR RESERVAS</button><button class="btn change">DESCARGAR VENDIDOS</button><button class="btn change">DESCARGAR INFORMACIÓN COMPLETA</button></div></div>
+
+<div id="password" class="panel"><h3>Cambiar contraseña</h3><div class="grid"><label>Actual<input type="password"></label><label>Nueva<input type="password"></label><label>Repetir<input type="password"></label></div><button class="btn change">CAMBIAR CONTRASEÑA</button></div>
+
+<div id="redes" class="panel"><h3>Link y QR</h3><input id="raffleLink" readonly><br><button class="btn change" onclick="copyLink()">COPIAR LINK</button><button class="btn change">DESCARGAR QR</button><div class="qr">QR</div></div>
+
+<div id="estados" class="panel"><h3>Cambiar estado de números</h3><div class="grid"><label>Número<input id="stateNumber" maxlength="4" placeholder="0001"></label><label>Estado<select id="state"><option value="free">LIBRE</option><option value="reserved">RESERVADO</option><option value="sold">VENDIDO</option></select></label></div><button class="btn red change" onclick="changeState()">CAMBIAR ESTADO</button></div>
+</div></div></div>
+
 <script>
-const TOTAL=10000;let maxPurchase=10,reservationHours=6,wa="5493510000000";const sold=new Set([7,18,42,125,310,777,1024,1234,2345,3456,4567,5000,5821,6123,7001,8123,9000,9876]),reserved=new Set([12,99,202,1500,4444,8888]),selected=new Set();
-const nums=document.getElementById("numbers");function f(n){return String(n).padStart(4,"0")}function render(filter=""){nums.innerHTML="";let a=0,b=TOTAL;if(filter!==""){let n=Number(filter);if(Number.isInteger(n)&&n>=0&&n<TOTAL){a=n;b=n+1}}for(let i=a;i<b;i++){let x=document.createElement("button");x.className="num";x.textContent=f(i);if(sold.has(i)){x.classList.add("sold");x.disabled=true}else if(reserved.has(i)){x.classList.add("reserved");x.disabled=true}else if(selected.has(i))x.classList.add("selected");x.onclick=()=>{if(selected.has(i))selected.delete(i);else if(selected.size<maxPurchase)selected.add(i);else return alert("Alcanzaste el máximo permitido.");render(document.getElementById("search").value);update()};nums.appendChild(x)}}function update(){document.getElementById("count").textContent=selected.size;document.getElementById("list").textContent=selected.size?[...selected].sort((a,b)=>a-b).map(f).join(" - "):"No seleccionaste números.";document.getElementById("max").textContent=maxPurchase;document.getElementById("hours").textContent=reservationHours+" horas";document.getElementById("available").textContent=TOTAL-sold.size-reserved.size}document.getElementById("search").oninput=e=>render(e.target.value);render();update();
-document.getElementById("save").onclick=()=>{maxPurchase=+document.getElementById("maxInput").value;reservationHours=+document.getElementById("hoursInput").value;wa=document.getElementById("wa").value.replace(/\D/g,"");if(selected.size>maxPurchase)selected.clear();render();update();alert("Configuración actualizada en esta demo.")};
-document.getElementById("reserve").onclick=()=>{let n=document.getElementById("name").value.trim(),l=document.getElementById("last").value.trim(),d=document.getElementById("dni").value.trim(),p=document.getElementById("phone").value.trim();if(!selected.size)return alert("Seleccioná números.");if(!n||!l||!d||!p)return alert("Completá nombre, apellido, DNI y teléfono.");let list=[...selected].sort((a,b)=>a-b).map(f).join(" - ");let msg=`RESERVA - Sorteo 001\nNombre: ${n} ${l}\nDNI: ${d}\nTeléfono: ${p}\nNúmeros: ${list}\nCantidad: ${selected.size}\nReserva: ${reservationHours} horas`;window.open("https://wa.me/"+wa+"?text="+encodeURIComponent(msg),"_blank")};
-const ov=document.getElementById("overlay");document.getElementById("open").onclick=()=>ov.style.display="grid";document.getElementById("close").onclick=()=>ov.style.display="none";document.getElementById("login").onclick=()=>{if(document.getElementById("pass").value==="admin123"){ov.style.display="none";document.getElementById("admin").classList.add("show");document.getElementById("admin").scrollIntoView({behavior:"smooth"})}else document.getElementById("err").textContent="Contraseña incorrecta."};
-</script></body></html>
+const state={};for(let i=0;i<10000;i++)state[i]=i%997===0?'sold':(i%991===0?'reserved':'free');
+const numbers=document.getElementById('numbers');
+for(let i=0;i<10000;i++){let b=document.createElement('button');b.className='num '+state[i];b.textContent=String(i).padStart(4,'0');b.dataset.n=i;b.onclick=()=>{if(state[i]==='free'){state[i]='selected';b.className='num selected'}else if(state[i]==='selected'){state[i]='free';b.className='num free'}updateSelected();};numbers.appendChild(b)}
+function render(filter='all',query=''){[...numbers.children].forEach(b=>{let s=state[b.dataset.n];let q=b.textContent.includes(query);b.style.display=(q&&(filter==='all'||s===filter||s==='selected'&&filter==='free'))?'':'none';b.className='num '+s});}
+function updateSelected(){document.getElementById('selectedList').textContent=[...numbers.querySelectorAll('.selected')].map(x=>x.textContent).join(', ')||'Ninguno'}
+document.querySelectorAll('.filter').forEach(x=>x.onclick=()=>{document.querySelectorAll('.filter').forEach(y=>y.classList.remove('active'));x.classList.add('active');render(x.dataset.filter,document.getElementById('search').value)})
+document.getElementById('search').oninput=e=>render(document.querySelector('.filter.active').dataset.filter,e.target.value);
+function triple(a){for(let i=1;i<=3;i++)if(!confirm('CONFIRMACIÓN '+i+' DE 3\\n\\n¿Estás seguro?\\n\\n'+a))return false;return true}
+function login(){if(document.getElementById('adminPass').value==='admin123'){loginBox.style.display='none';adminArea.style.display='block';refreshAdmin()}else alert('Contraseña incorrecta')}
+document.getElementById('adminTrigger').onclick=()=>{adminOverlay.classList.add('open');document.getElementById('adminPass').focus()}
+document.getElementById('closeAdmin').onclick=()=>adminOverlay.classList.remove('open')
+adminOverlay.onclick=e=>{if(e.target===adminOverlay)adminOverlay.classList.remove('open')}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')adminOverlay.classList.remove('open')})
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));t.classList.add('active');document.getElementById(t.dataset.panel).classList.add('active');if(t.dataset.panel==='consulta')refreshAdmin()})
+document.querySelectorAll('.change').forEach(b=>b.addEventListener('click',e=>{if(!triple(b.textContent.trim()))e.stopImmediatePropagation()},true))
+function refreshAdmin(){let a=0,r=0,s=0;adminNumbers.innerHTML='';for(let i=0;i<10000;i++){if(state[i]==='free')a++;if(state[i]==='reserved')r++;if(state[i]==='sold')s++;let x=document.createElement('span');x.className='badge '+(state[i]==='reserved'?'reserved':state[i]==='sold'?'sold':'');x.textContent=String(i).padStart(4,'0');adminNumbers.appendChild(x)}freeCount.textContent=a;reservedCount.textContent=r;soldCount.textContent=s}
+function changeState(){let n=parseInt(stateNumber.value,10);if(!Number.isInteger(n)||n<0||n>9999)return alert('Número inválido');if(!triple('Cambiar estado del '+String(n).padStart(4,'0')))return;state[n]=document.getElementById('state').value;render();refreshAdmin()}
+function copyLink(){navigator.clipboard?.writeText(location.href);alert('Link copiado')}
+raffleLink.value=location.href;
+function showShareBanner(selected){
+  document.getElementById('shareTitle').textContent=document.getElementById('publicTitle').textContent;
+  document.getElementById('shareDescription').textContent=document.getElementById('publicDescription').textContent;
+  document.getElementById('shareNumbers').textContent='Números reservados: '+selected.join(', ');
+  document.getElementById('shareOverlay').classList.add('open');
+}
+document.getElementById('reserve').onclick=()=>{
+  let selected=[...numbers.querySelectorAll('.selected')].map(x=>x.textContent);
+  if(!selected.length)return alert('Seleccioná al menos un número');
+  const totalAPagar=calculatePurchaseTotal(selected.length); if(!totalAPagar)return alert('No hay un precio configurado para esa cantidad de números.');
+  if(!name.value.trim()||!last.value.trim()||!dni.value.trim()||!phone.value.trim())return alert('Completá todos tus datos antes de reservar.');
+  const template=document.getElementById('adminWhatsappMessage')?.value || `Hola! Quiero reservar los números {NUMEROS} del Sorteo {SORTEO}.
+
+Nombre: {NOMBRE} {APELLIDO}
+DNI: {DNI}
+Teléfono: {TELEFONO}
+Total a pagar: {TOTAL}`;
+  const raffleNumber=document.getElementById('adminNumber')?.value || '001';
+  const message=template
+    .replaceAll('{SORTEO}', raffleNumber)
+    .replaceAll('{NUMEROS}', selected.join(', '))
+    .replaceAll('{NOMBRE}', name.value.trim())
+    .replaceAll('{APELLIDO}', last.value.trim())
+    .replaceAll('{DNI}', dni.value.trim())
+    .replaceAll('{TELEFONO}', phone.value.trim());
+  const wa=document.getElementById('adminWhatsapp')?.value.replace(/\D/g,'') || '5493510000000';
+  window.open('https://wa.me/'+wa+'?text='+encodeURIComponent(message),'_blank');
+  showShareBanner(selected);
+}
+
+document.getElementById('closeShare').onclick=()=>document.getElementById('shareOverlay').classList.remove('open');
+document.getElementById('closeShare2').onclick=()=>document.getElementById('shareOverlay').classList.remove('open');
+document.getElementById('shareOverlay').onclick=e=>{if(e.target.id==='shareOverlay')e.currentTarget.classList.remove('open')};
+
+async function makeShareImage(){
+  const card=document.getElementById('shareCard');
+  const w=1200,h=Math.max(700,Math.round(card.offsetHeight*1200/card.offsetWidth));
+  const c=document.createElement('canvas'); c.width=w; c.height=h;
+  const ctx=c.getContext('2d');
+  const g=ctx.createLinearGradient(0,0,w,h); g.addColorStop(0,'#111827'); g.addColorStop(.55,'#312e81'); g.addColorStop(1,'#111827'); ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+  ctx.textAlign='center';
+  ctx.fillStyle='#c7d2fe'; ctx.font='800 28px Inter, sans-serif'; ctx.fillText('SORTEO NÚMERO 001',w/2,110);
+  ctx.fillStyle='#fff'; ctx.font='800 64px Outfit, sans-serif'; ctx.fillText(document.getElementById('shareTitle').textContent,w/2,190);
+  ctx.fillStyle='#dbeafe'; ctx.font='28px Inter, sans-serif';
+  const desc=document.getElementById('shareDescription').textContent;
+  const words=desc.split(' '); let line='', y=255;
+  for(const word of words){const test=line?line+' '+word:word;if(ctx.measureText(test).width>900){ctx.fillText(line,w/2,y);y+=40;line=word}else line=test}
+  if(line)ctx.fillText(line,w/2,y);
+  ctx.fillStyle='rgba(255,255,255,.12)'; ctx.strokeStyle='rgba(255,255,255,.2)'; ctx.lineWidth=2;
+  const boxW=700,boxH=70,boxX=(w-boxW)/2,boxY=y+45; ctx.roundRect(boxX,boxY,boxW,boxH,16);ctx.fill();ctx.stroke();
+  ctx.fillStyle='#fff';ctx.font='800 28px Inter, sans-serif';ctx.fillText(document.getElementById('shareNumbers').textContent,w/2,boxY+45);
+  ctx.fillStyle='#cbd5e1';ctx.font='20px Inter, sans-serif';ctx.fillText('SORTEOS CÓRDOBA · Guardá esta imagen como comprobante',w/2,h-55);
+  return await new Promise(resolve=>c.toBlob(resolve,'image/png'));
+}
+document.getElementById('downloadShare').onclick=async()=>{
+  const blob=await makeShareImage(); if(!blob)return;
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='reserva-sorteo-001.png';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+};
+document.getElementById('nativeShare').onclick=async()=>{
+  const blob=await makeShareImage(); if(!blob)return;
+  if(navigator.share&&navigator.canShare){
+    const file=new File([blob],'reserva-sorteo-001.png',{type:'image/png'});
+    if(navigator.canShare({files:[file]})){await navigator.share({title:'Mi reserva - Sorteos Córdoba',text:'Mi reserva del sorteo.',files:[file]});return}
+  }
+  alert('Tu navegador no permite compartir archivos directamente. Usá DESCARGAR IMAGEN y compartila desde tu celular.');
+};
+
+function syncPublicData(){
+  const title=document.getElementById('adminTitle')?.value || 'Gran Sorteo';
+  const num=document.getElementById('adminNumber')?.value || '001';
+  const desc=document.getElementById('adminDescription')?.value || 'Acá se informa cuándo y cómo se realiza el sorteo.';
+  document.getElementById('publicTitle').textContent=title;
+  document.getElementById('publicDescription').textContent=desc;
+  document.querySelector('.status-pill').innerHTML='<span></span> SORTEO NÚMERO '+num;
+  document.getElementById('shareTitle').textContent=title;
+  document.getElementById('shareDescription').textContent=desc;
+}
+document.querySelectorAll('#datos .change').forEach(btn=>btn.addEventListener('click',syncPublicData));
+
+const prizeList=document.getElementById('prizeList');
+function addPrize(){let d=document.createElement('div');d.className='admin-prize';d.innerHTML='<div class="grid"><label>Título<input placeholder="Ej. Primer premio"></label><label>Imagen<input type="file" accept="image/*"></label></div><label style="display:block;margin-top:10px">Breve descripción<textarea rows="3" placeholder="Descripción"></textarea></label><button type="button" class="btn red remove">ELIMINAR</button>';prizeList.appendChild(d)}
+addPrize();addPrize();addPrize();document.getElementById('addPrize').onclick=addPrize;
+function syncPublicPrizes(){
+  const items=[...document.querySelectorAll('#prizeList .admin-prize')].map((d,i)=>({
+    title:d.querySelector('input[placeholder*="Primer premio"]')?.value || ['Primer premio','Segundo premio','Tercer premio'][i] || ('Premio '+(i+1)),
+    desc:d.querySelector('textarea')?.value || '',
+  }));
+  const base=document.querySelectorAll('#publicPrizes .prize');
+  items.slice(0,3).forEach((p,i)=>{if(base[i]){base[i].querySelector('h3').textContent=p.title;base[i].querySelector('p').textContent=p.desc;}});
+  const extra=document.getElementById('extraPrizes'); extra.innerHTML='';
+  items.slice(3).forEach((p,i)=>{const d=document.createElement('div');d.className='prize';d.innerHTML='<div class="prize-img">IMAGEN DEL PREMIO</div><div class="prize-body"><span class="podium-rank">🏆 PREMIO '+(i+4)+'</span><h3></h3><p></p></div>';d.querySelector('h3').textContent=p.title;d.querySelector('p').textContent=p.desc;extra.appendChild(d)});
+}
+document.querySelectorAll('#premios .change').forEach(btn=>btn.addEventListener('click',syncPublicPrizes));
+prizeList.onclick=e=>{if(e.target.classList.contains('remove'))e.target.closest('.admin-prize').remove()}
+</script>
+<script>
+/* Registro de reservas/ventas para administración */
+function getCustomerRecords(){
+  const records=[];
+  document.querySelectorAll('#numbers .number').forEach(el=>{
+    const state=el.dataset.state || (el.classList.contains('sold')?'sold':el.classList.contains('reserved')?'reserved':'free');
+    if(state==='reserved' || state==='sold'){
+      records.push({
+        number:el.textContent.trim(),
+        state,
+        name:el.dataset.name || '',
+        last:el.dataset.last || '',
+        dni:el.dataset.dni || '',
+        phone:el.dataset.phone || ''
+      });
+    }
+  });
+  return records;
+}
+
+function renderSalesRegistry(){
+  const body=document.getElementById('salesTableBody');
+  if(!body)return;
+  const records=getCustomerRecords();
+  body.innerHTML='';
+  if(!records.length){
+    body.innerHTML='<tr><td colspan="6" class="sales-empty">Todavía no hay números reservados o vendidos.</td></tr>';
+    return;
+  }
+  records.forEach(r=>{
+    const tr=document.createElement('tr');
+    const buyer=(r.name+' '+r.last).trim() || 'Sin datos';
+    tr.innerHTML=`
+      <td>${buyer}</td>
+      <td>${r.dni || '—'}</td>
+      <td>${r.phone || '—'}</td>
+      <td><strong>${r.number}</strong></td>
+      <td><span class="sales-status ${r.state}">${r.state==='sold'?'VENDIDO':'RESERVADO'}</span></td>
+      <td>
+        ${r.state==='reserved'
+          ? `<button class="btn pay-btn mark-paid" data-number="${r.number}">MARCAR COMO PAGADO</button>`
+          : `<span style="color:#64748b;font-size:12px">Pago confirmado</span>`}
+      </td>`;
+    body.appendChild(tr);
+  });
+  body.querySelectorAll('.mark-paid').forEach(btn=>{
+    btn.onclick=()=>{
+      const number=btn.dataset.number;
+      if(!confirm('¿Confirmás que el número '+number+' fue pagado y debe pasar a VENDIDO?'))return;
+      if(!confirm('¿Seguro que querés marcar el número '+number+' como VENDIDO?'))return;
+      if(!confirm('Última confirmación: ¿marcar '+number+' como VENDIDO?'))return;
+      const el=[...document.querySelectorAll('#numbers .number')].find(x=>x.textContent.trim()===number);
+      if(el){
+        el.dataset.state='sold';
+        el.classList.remove('reserved','selected','free');
+        el.classList.add('sold');
+        if(typeof updateCounts==='function')updateCounts();
+        renderSalesRegistry();
+      }
+    };
+  });
+}
+
+document.getElementById('refreshSales')?.addEventListener('click',renderSalesRegistry);
+renderSalesRegistry();
+
+/* Cuando una reserva del prototipo se realiza, guardamos los datos en los números seleccionados
+   para que aparezcan inmediatamente en el registro administrativo. */
+const originalShowShareBanner = window.showShareBanner;
+window.showShareBanner = function(selected){
+  const buyerName=document.getElementById('name')?.value.trim() || '';
+  const buyerLast=document.getElementById('last')?.value.trim() || '';
+  const buyerDni=document.getElementById('dni')?.value.trim() || '';
+  const buyerPhone=document.getElementById('phone')?.value.trim() || '';
+  selected.forEach(num=>{
+    const el=[...document.querySelectorAll('#numbers .number')].find(x=>x.textContent.trim()===num);
+    if(el){
+      el.dataset.state='reserved';
+      el.dataset.name=buyerName;
+      el.dataset.last=buyerLast;
+      el.dataset.dni=buyerDni;
+      el.dataset.phone=buyerPhone;
+      el.classList.remove('free','selected','sold');
+      el.classList.add('reserved');
+    }
+  });
+  if(typeof originalShowShareBanner==='function') originalShowShareBanner(selected);
+  renderSalesRegistry();
+};
+</script>
+<script>
+
+/* Precios por cantidad exacta */
+const defaultPriceTiers=[
+  {qty:1,price:1000},
+  {qty:2,price:1800},
+  {qty:3,price:2500},
+  {qty:5,price:4000},
+  {qty:10,price:7000}
+];
+
+function addPriceTierRow(data={qty:1,price:0}){
+  const wrap=document.getElementById('priceTiers'); if(!wrap)return;
+  const row=document.createElement('div');
+  row.className='pricing-row';
+  row.innerHTML=`
+    <label style="margin:0">Cantidad de números
+      <input class="price-qty" type="number" min="1" step="1" value="${data.qty}">
+    </label>
+    <label style="margin:0">Precio
+      <input class="price-value" type="number" min="0" step="100" value="${data.price}">
+    </label>
+    <button type="button" class="btn remove-price">ELIMINAR</button>`;
+  wrap.appendChild(row);
+  row.querySelector('.remove-price').onclick=()=>{
+    row.remove();
+    updatePurchaseTotal();
+  };
+  row.querySelectorAll('input').forEach(i=>i.addEventListener('input',updatePurchaseTotal));
+}
+
+function getPriceTiers(){
+  return [...document.querySelectorAll('#priceTiers .pricing-row')]
+    .map(r=>({
+      qty:Number(r.querySelector('.price-qty').value)||0,
+      price:Number(r.querySelector('.price-value').value)||0
+    }))
+    .filter(x=>x.qty>0)
+    .sort((a,b)=>a.qty-b.qty);
+}
+
+function calculatePurchaseTotal(qty){
+  const tiers=getPriceTiers();
+  const tier=tiers.find(t=>t.qty===qty);
+  return tier ? tier.price : 0;
+}
+
+function formatMoney(v){
+  return new Intl.NumberFormat('es-AR',{
+    style:'currency',
+    currency:'ARS',
+    maximumFractionDigits:0
+  }).format(v||0);
+}
+
+function updatePurchaseTotal(){
+  const qty=document.querySelectorAll('#numbers .selected').length;
+  const total=calculatePurchaseTotal(qty);
+  const el=document.getElementById('purchaseTotal');
+  if(el)el.textContent=qty ? formatMoney(total) : '$ 0';
+
+  const reserve=document.getElementById('reserve');
+  if(reserve)reserve.disabled=!!qty && !total;
+}
+
+if(document.getElementById('priceTiers')){
+  defaultPriceTiers.forEach(addPriceTierRow);
+  document.getElementById('addPriceTier').onclick=()=>addPriceTierRow({qty:1,price:0});
+}
+
+document.addEventListener('click',e=>{
+  if(e.target.closest('#numbers .number')){
+    setTimeout(updatePurchaseTotal,0);
+  }
+});
+updatePurchaseTotal();
+</script>
+<script>
+/* Confirmación obligatoria para cambios administrativos */
+async function tripleConfirm(message){
+  const first=confirm(message+'\n\nConfirmación 1 de 3');
+  if(!first)return false;
+  const second=confirm(message+'\n\nConfirmación 2 de 3\n\n¿Confirmás nuevamente?');
+  if(!second)return false;
+  const third=confirm(message+'\n\nÚLTIMA CONFIRMACIÓN 3 de 3\n\nEsta acción se aplicará al guardar.');
+  return third;
+}
+
+/* Intercepta botones administrativos que realizan cambios directos */
+document.addEventListener('click',async e=>{
+  const btn=e.target.closest('#adminOverlay .change');
+  if(!btn || btn.dataset.tripleConfirmed==='1')return;
+
+  /* Algunos botones ya tienen su propio flujo de confirmación; evitamos duplicarlo. */
+  if(btn.id==='deleteAllData' || btn.classList.contains('mark-paid'))return;
+
+  e.preventDefault();
+  e.stopImmediatePropagation();
+
+  const ok=await tripleConfirm('¿Querés guardar/aplicar este cambio?');
+  if(!ok)return;
+
+  btn.dataset.tripleConfirmed='1';
+  btn.click();
+  setTimeout(()=>delete btn.dataset.tripleConfirmed,100);
+},true);
+
+/* Exportación de respaldo CSV compatible con Excel para el prototipo */
+function buildBackupRows(){
+  const rows=[['Comprador','Apellido','DNI','Teléfono','Número','Estado']];
+  document.querySelectorAll('#numbers .number').forEach(el=>{
+    const state=el.dataset.state || (el.classList.contains('sold')?'sold':el.classList.contains('reserved')?'reserved':'free');
+    if(state==='reserved'||state==='sold'){
+      rows.push([
+        el.dataset.name||'',
+        el.dataset.last||'',
+        el.dataset.dni||'',
+        el.dataset.phone||'',
+        el.textContent.trim(),
+        state==='sold'?'VENDIDO':'RESERVADO'
+      ]);
+    }
+  });
+  return rows;
+}
+
+function downloadBackupExcel(){
+  const rows=buildBackupRows();
+  const csv=rows.map(r=>r.map(v=>{
+    const s=String(v??'').replace(/"/g,'""');
+    return '"'+s+'"';
+  }).join(';')).join('\r\n');
+
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='respaldo-sorteo-'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
+document.getElementById('deleteAllData')?.addEventListener('click',async()=>{
+  alert('Antes de eliminar los datos, se descargará un respaldo con toda la información del sorteo en un archivo compatible con Excel.');
+
+  downloadBackupExcel();
+
+  const c1=confirm('¿Querés eliminar TODOS los datos del sorteo?\n\nConfirmación 1 de 3');
+  if(!c1)return;
+
+  const c2=confirm('¿Estás completamente seguro?\n\nSe eliminarán números, reservas, ventas y datos de compradores.\n\nConfirmación 2 de 3');
+  if(!c2)return;
+
+  const c3=confirm('ÚLTIMA CONFIRMACIÓN 3 de 3\n\n¿REALMENTE querés eliminar todos los datos del sorteo?');
+  if(!c3)return;
+
+  const password=prompt('Ingresá la contraseña de administrador para confirmar la eliminación:');
+  if(password===null)return;
+
+  /* Prototipo: contraseña actual. En Firebase se reemplazará por autenticación real. */
+  if(password!=='admin123'){
+    alert('Contraseña incorrecta. No se eliminaron los datos.');
+    return;
+  }
+
+  document.querySelectorAll('#numbers .number').forEach(el=>{
+    el.dataset.state='free';
+    delete el.dataset.name;
+    delete el.dataset.last;
+    delete el.dataset.dni;
+    delete el.dataset.phone;
+    el.classList.remove('reserved','sold','selected');
+    el.classList.add('free');
+  });
+
+  if(typeof updateCounts==='function')updateCounts();
+  if(typeof renderSalesRegistry==='function')renderSalesRegistry();
+
+  alert('Todos los datos del sorteo fueron eliminados.');
+});
+</script>
+</body></html>
