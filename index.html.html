@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sorteos Córdoba</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#020617;--card:rgba(30,41,59,.75);--text:#f8fafc;--muted:#94a3b8;
+  --primary:#4f46e5;--primary2:#6366f1;--accent:#ef4444;--reserved:#eab308;
+  --selected:#6366f1;--free:#22c55e;--border:rgba(255,255,255,.08);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial,Helvetica,sans-serif}
+button,input,select,textarea{font:inherit}
+header{background:rgba(15,23,42,.88);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.08);position:sticky;top:0;z-index:20}
+.header-inner{max-width:1150px;margin:auto;padding:12px 18px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:48px;height:48px;border:2px solid rgba(99,102,241,.5);border-radius:50%;display:grid;place-items:center;color:#94a3b8;font-size:10px;background:#1e293b}
+.brand strong{font-size:19px}.admin-trigger{width:15px;height:15px;padding:0;border:0;border-radius:50%;background:#d71920;cursor:pointer;box-shadow:none;font-size:0}
+main{max-width:1150px;margin:24px auto;padding:0 18px}
+.hero{text-align:center;margin-bottom:22px}.hero h1{font-size:clamp(34px,5vw,58px);margin:12px 0 8px;line-height:1.05;letter-spacing:-.02em}.hero h2{font-size:22px;margin:6px 0}.hero p{color:var(--muted);max-width:820px;margin:10px auto;line-height:1.65}
+.card{background:var(--card);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:18px}
+.prizes{display:grid;grid-template-columns:minmax(190px,260px) minmax(250px,320px) minmax(190px,260px);justify-content:center;align-items:end;gap:18px;padding:20px 8px 0}.prize{border:1px solid var(--border);border-radius:18px;overflow:hidden;background:linear-gradient(180deg,rgba(30,41,59,.9),rgba(15,23,42,.82));box-shadow:0 18px 45px rgba(0,0,0,.22);position:relative}.prize-img{height:190px;background:linear-gradient(135deg,#e2e8f0,#cbd5e1);display:grid;place-items:center;color:#64748b;font-weight:700}.prize-body{padding:15px}.prize-body h3{margin:0 0 7px}.prize-body p{margin:0;color:#94a3b8;line-height:1.45}.prize:nth-child(1){grid-column:2;grid-row:1;transform:translateY(-22px);border-color:rgba(250,204,21,.4);box-shadow:0 28px 60px rgba(0,0,0,.32),0 0 0 1px rgba(250,204,21,.08)}.prize:nth-child(2){grid-column:1;grid-row:1}.prize:nth-child(3){grid-column:3;grid-row:1}.podium-rank{display:inline-flex;align-items:center;justify-content:center;margin-bottom:9px;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800;background:rgba(99,102,241,.12);color:#a5b4fc;border:1px solid rgba(99,102,241,.22)}.prize:nth-child(1) .podium-rank{background:rgba(250,204,21,.12);color:#fde68a;border-color:rgba(250,204,21,.25)}.extra-prizes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:18px}.extra-prizes .prize:nth-child(n){grid-column:auto;grid-row:auto;transform:none}.extra-prizes .prize-img{height:150px}
+.search-row{display:flex;gap:10px;flex-wrap:wrap}.search-row input{flex:1;min-width:220px;padding:13px;border:1px solid #334155;background:#0f172a;color:#f8fafc;border-radius:10px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:13px 0}.filter{border:1px solid #334155;background:#0f172a;padding:9px 13px;border-radius:9px;cursor:pointer;font-weight:800}.filter.active{background:#1e293b}.filter-all{color:#60a5fa}.filter-free{color:#4ade80}.filter-reserved{color:#facc15}.filter-sold{color:#f87171}
+.legend{display:none}.free{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.2);color:#4ade80}.reserved{background:rgba(234,179,8,.18);color:#facc15}.unavailable{background:rgba(239,68,68,.14);color:#fb7185}.selected{background:var(--selected);color:#fff}
+.numbers{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;max-height:500px;overflow:auto;padding:2px}
+.num{border:1px solid #334155;background:#0f172a;color:#e2e8f0;border-radius:7px;padding:9px 2px;cursor:pointer;font-family:monospace}.num.reserved{background:#eab308;color:#111;border-color:#eab308;cursor:not-allowed}.num.sold{background:#ef4444;color:#fff;border-color:#ef4444;cursor:not-allowed}.num.selected{background:#6366f1;color:#fff;border-color:#6366f1}
+.selection{margin-top:15px;padding:13px;background:rgba(15,23,42,.9);border-radius:10px;border:1px solid #1e293b}.form{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}.form input{padding:12px;border:1px solid #334155;background:#0f172a;color:#f8fafc;border-radius:9px}.primary{width:100%;padding:14px;margin-top:12px;border:0;border-radius:10px;background:linear-gradient(90deg,#22c55e,#14b8a6);color:#020617;font-weight:bold;cursor:pointer}
+.notice{text-align:center;color:#94a3b8;font-size:13px;margin-top:10px}
+.admin-overlay{display:none;position:fixed;inset:0;z-index:100;background:#0008;padding:35px 14px;overflow:auto}.admin-overlay.open{display:flex;justify-content:center;align-items:flex-start}
+.admin-modal{background:#0f172a;border-radius:18px;width:min(1120px,100%);padding:22px;position:relative;box-shadow:0 20px 70px #0005}.close{position:absolute;right:13px;top:10px;border:0;background:#eee;border-radius:50%;width:36px;height:36px;font-size:25px;cursor:pointer}
+.admin-tabs{display:flex;gap:7px;flex-wrap:wrap;border-bottom:1px solid #ddd;padding-bottom:12px;margin-bottom:18px}.tab{border:0;background:#1e293b;color:#94a3b8;padding:10px 12px;border-radius:9px;font-weight:bold;cursor:pointer}.tab.active{background:#4f46e5;color:#fff}.panel{display:none}.panel.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}.grid label,.panel>label{display:block;font-weight:bold}.grid input,.grid select,.panel textarea,.panel input{width:100%;margin-top:6px;padding:11px;border:1px solid #334155;background:#0f172a;color:#f8fafc;border-radius:8px}
+.btn{border:0;border-radius:9px;background:#111;color:#fff;padding:11px 14px;font-weight:bold;cursor:pointer;margin-top:12px}.btn.red{background:#b91c1c}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{padding:15px;text-align:center;border-radius:10px;background:#0f172a;border:1px solid #1e293b}.stat b{display:block;font-size:26px;margin-top:4px}.admin-number-list{display:flex;flex-wrap:wrap;gap:5px;max-height:270px;overflow:auto;margin-top:12px}.badge{padding:6px 8px;border-radius:6px;background:#1e293b;color:#cbd5e1;font-family:monospace}.badge.reserved{background:#eab308;color:#111}.badge.sold{background:#ef4444;color:#fff}.admin-prize{padding:14px;background:#0f172a;border:1px solid #1e293b;border-radius:12px;margin-bottom:10px}.qr{width:180px;height:180px;border:2px dashed #aaa;display:grid;place-items:center;margin-top:14px;color:#888}.state-table{width:100%;border-collapse:collapse;margin-top:14px;font-size:13px}.state-table th,.state-table td{padding:9px;border-bottom:1px solid #1e293b;text-align:left;vertical-align:middle}.state-table th{color:#94a3b8;font-size:12px;text-transform:uppercase}.state-actions{display:flex;gap:6px;flex-wrap:wrap}.state-actions .btn{margin:0;padding:7px 9px;font-size:11px}.state-reserved{color:#facc15;font-weight:800}.state-sold{color:#f87171;font-weight:800}.state-free{color:#4ade80;font-weight:800}.countdown{font-variant-numeric:tabular-nums;color:#cbd5e1}.footer-legal{text-align:center;padding:18px 10px 28px}.footer-legal button{border:0;background:none;color:#475569;font-size:10px;text-decoration:underline;cursor:pointer}.legal-overlay{display:none;position:fixed;inset:0;z-index:150;background:rgba(2,6,23,.88);backdrop-filter:blur(10px);padding:24px;overflow:auto}.legal-overlay.open{display:flex;align-items:center;justify-content:center}.legal-box{width:min(760px,100%);background:#0f172a;border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:22px;box-shadow:0 25px 80px rgba(0,0,0,.45)}.legal-box h2{font-family:Outfit,Inter,sans-serif}.legal-box p,.legal-box li{color:#94a3b8;line-height:1.6;font-size:13px}
+@media(max-width:800px){.prizes{grid-template-columns:1fr 1fr;align-items:stretch}.prize:nth-child(1){grid-column:1 / -1;grid-row:1;transform:none;max-width:360px;width:100%;justify-self:center}.prize:nth-child(2){grid-column:1;grid-row:2}.prize:nth-child(3){grid-column:2;grid-row:2}}@media(max-width:700px){.numbers{grid-template-columns:repeat(5,1fr)}.form{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr}.prizes{grid-template-columns:1fr}.prize:nth-child(1),.prize:nth-child(2),.prize:nth-child(3){grid-column:1;grid-row:auto;max-width:none}.prize:nth-child(1){transform:none}}
+
+.reference-banner{background:linear-gradient(90deg,#0f172a,#1e1b4b,#0f172a);border:1px solid rgba(99,102,241,.2);border-radius:18px;padding:26px;margin-bottom:20px;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.status-pill{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:999px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);color:#a5b4fc;font-size:11px;font-weight:700}
+.status-pill span{width:8px;height:8px;border-radius:50%;background:#34d399;box-shadow:0 0 12px #34d399}
+.hero h1{font-family:Outfit,Inter,Arial,sans-serif;color:#fff}
+.hero h2{font-family:Outfit,Inter,Arial,sans-serif;color:#fff}
+.hero p{color:#cbd5e1}
+.card h2,.card h3{color:#f8fafc}
+.panel p{color:#94a3b8}
+
+
+.share-overlay{display:none;position:fixed;inset:0;z-index:120;background:rgba(2,6,23,.86);backdrop-filter:blur(12px);padding:24px;overflow:auto}
+.share-overlay.open{display:flex;align-items:center;justify-content:center}
+.share-box{width:min(760px,100%);background:#0f172a;border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:18px;box-shadow:0 30px 90px rgba(0,0,0,.45)}
+.share-box h2{margin:4px 0 6px;font-family:Outfit,Inter,sans-serif}.share-box p{color:#94a3b8;margin:0 0 14px}
+.share-card{position:relative;overflow:hidden;border-radius:20px;padding:28px;background:linear-gradient(135deg,#111827 0%,#312e81 55%,#111827 100%);border:1px solid rgba(255,255,255,.14);text-align:center}
+.share-card .share-logo{width:56px;height:56px;border-radius:50%;border:2px solid rgba(255,255,255,.35);display:grid;place-items:center;margin:0 auto 12px;font-size:9px;color:#cbd5e1}
+.share-card .share-small{font-size:12px;letter-spacing:.12em;color:#c7d2fe;font-weight:800}.share-card h3{font:800 clamp(27px,5vw,46px)/1.05 Outfit,Inter,sans-serif;margin:9px 0;color:#fff}.share-card .share-desc{max-width:600px;margin:0 auto 16px;color:#dbeafe;line-height:1.5}.share-card .share-numbers{display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);padding:10px 14px;border-radius:12px;color:#fff;font-weight:800}.share-card .share-footer{margin-top:18px;color:#cbd5e1;font-size:12px}
+.share-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.share-actions .btn{margin-top:0;flex:1;min-width:160px}.btn.green{background:#22c55e;color:#052e16}
+
+
+.admin-trigger{background:#172033!important;color:#475569!important;border:1px solid #243047!important;box-shadow:0 0 0 1px rgba(255,255,255,.01)!important}
+.admin-trigger:hover{background:#1e293b!important;color:#64748b!important}
+.number.free{color:#e2e8f0}
+.number.selected{color:#fff}
+
+.sales-table-wrap{overflow:auto;border:1px solid var(--border);border-radius:14px;background:rgba(2,6,23,.28)}
+.sales-table{width:100%;border-collapse:collapse;min-width:900px}
+.sales-table th,.sales-table td{padding:11px 12px;border-bottom:1px solid rgba(148,163,184,.10);text-align:left;font-size:13px}
+.sales-table th{color:#94a3b8;font-size:11px;text-transform:uppercase;letter-spacing:.06em;background:rgba(15,23,42,.72);position:sticky;top:0}
+.sales-table td{color:#e2e8f0}
+.sales-table tr:last-child td{border-bottom:0}
+.sales-status{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800}
+.sales-status.reserved{background:rgba(234,179,8,.13);color:#fde047;border:1px solid rgba(234,179,8,.25)}
+.sales-status.sold{background:rgba(239,68,68,.13);color:#fca5a5;border:1px solid rgba(239,68,68,.25)}
+.pay-btn{background:#22c55e!important;color:#052e16!important;border:0}
+.pay-btn:disabled{opacity:.55;cursor:not-allowed}
+.sales-empty{text-align:center;color:#64748b;padding:28px}
+.sales-toolbar{display:flex;gap:9px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px}
+.sales-toolbar .hint{margin:0}
+
+
+.pricing-box{margin-top:16px;padding:16px;border:1px solid var(--border);border-radius:14px;background:rgba(2,6,23,.28)}
+.pricing-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.pricing-row{display:grid;grid-template-columns:1fr 1fr auto;gap:9px;align-items:end;margin-bottom:9px}
+.pricing-row label{margin:0}
+.price-total{font-weight:900;font-size:22px;color:#a5b4fc}
+.purchase-total{margin-top:12px;padding:14px 16px;border-radius:14px;background:rgba(79,70,229,.12);border:1px solid rgba(99,102,241,.25);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.purchase-total span:first-child{color:#94a3b8}
+.purchase-total strong{font-size:25px;color:#fff}
+@media(max-width:600px){.pricing-row{grid-template-columns:1fr 1fr}.pricing-row .remove-price{grid-column:1/-1}.purchase-total{align-items:flex-start;flex-direction:column}}
+
+.confirm-step{background:rgba(234,179,8,.08);border:1px solid rgba(234,179,8,.22);padding:12px 14px;border-radius:12px;margin-top:12px;color:#fde68a}
+.danger-zone{border:1px solid rgba(239,68,68,.28)!important;background:rgba(127,29,29,.10)!important}
+.btn-danger{background:#991b1b!important;color:#fee2e2!important;border:1px solid #b91c1c!important}
+.btn-danger:hover{background:#b91c1c!important}
+.delete-warning{padding:16px;border-radius:14px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);color:#fecaca;line-height:1.55}
+
+.firebase-status{font-size:10px;color:#64748b;margin-left:8px;display:inline-flex;align-items:center;gap:5px}.firebase-dot{width:7px;height:7px;border-radius:50%;background:#eab308;display:inline-block}.firebase-status.ready .firebase-dot{background:#22c55e}.firebase-status.error .firebase-dot{background:#ef4444}
+
+</head>
+<body>
+<header><div class="header-inner"><div class="brand"><div class="logo">LOGO</div><strong>SORTEOS CÓRDOBA</strong><span id="firebaseStatus" class="firebase-status"><span class="firebase-dot"></span><span id="firebaseStatusText">Conectando…</span></span></div><button id="adminTrigger" class="admin-trigger" aria-label="Administrador"></button></div></header>
+
+<main>
+<section class="hero reference-banner">
+<div class="status-pill"><span></span> SORTEO NÚMERO 001</div>
+<h1 id="publicTitle">Gran Sorteo</h1>
+<p id="publicDescription">Acá se informa cuándo y cómo se realiza el sorteo, junto con cualquier condición importante para participar.</p>
+</section>
+
+<section class="card">
+<h2 style="text-align:center">Premios</h2>
+<div class="prizes" id="publicPrizes">
+<div class="prize"><div class="prize-img">IMAGEN DEL PREMIO</div><div class="prize-body"><span class="podium-rank">🥇 1° PREMIO</span><h3>Primer premio</h3><p>Descripción del premio principal.</p></div></div>
+<div class="prize"><div class="prize-img">IMAGEN DEL PREMIO</div><div class="prize-body"><span class="podium-rank">🥈 2° PREMIO</span><h3>Segundo premio</h3><p>Descripción del segundo premio.</p></div></div>
+<div class="prize"><div class="prize-img">IMAGEN DEL PREMIO</div><div class="prize-body"><span class="podium-rank">🥉 3° PREMIO</span><h3>Tercer premio</h3><p>Descripción del tercer premio.</p></div></div>
+</div>
+<div id="extraPrizes" class="extra-prizes"></div>
+</section>
+
+<section class="card">
+<h2>Elegí tus números</h2>
+<div class="search-row"><input id="search" placeholder="Buscar número, por ejemplo 0025"></div>
+<div class="filters">
+<button class="filter filter-all active" data-filter="all">TODOS</button>
+<button class="filter filter-free" data-filter="free">LIBRES</button>
+<button class="filter filter-reserved" data-filter="reserved">RESERVADOS</button>
+<button class="filter filter-sold" data-filter="sold">VENDIDOS</button>
+</div>
+<div id="numbers" class="numbers"></div>
+<div class="selection"><strong>Números seleccionados:</strong> <span id="selectedList">Ninguno</span><br><strong>Total a pagar:</strong> <span id="purchaseTotal">$ 0</span></div>
+<div class="form"><input id="name" placeholder="Nombre"><input id="last" placeholder="Apellido"><input id="dni" placeholder="DNI"><input id="phone" placeholder="Teléfono"></div>
+<button id="reserve" class="primary">RESERVAR Y PAGAR</button>
+<div class="notice">Al confirmar, se abrirá WhatsApp con los datos de la reserva.</div>
+</section>
+</main>
+
+<div id="shareOverlay" class="share-overlay">
+  <div class="share-box">
+    <button class="close" id="closeShare">×</button>
+    <h2>¡Reserva registrada!</h2>
+    <p>Ahora podés guardar o compartir esta placa con la información de tu reserva.</p>
+    <div id="shareCard" class="share-card">
+      <div class="share-logo">LOGO</div>
+      <div class="share-small">SORTEO NÚMERO 001</div>
+      <h3 id="shareTitle">Gran Sorteo</h3>
+      <div id="shareDescription" class="share-desc">Información del sorteo.</div>
+      <div id="shareNumbers" class="share-numbers">Números reservados: —</div>
+      <div class="share-footer">SORTEOS CÓRDOBA · Guardá esta imagen como comprobante</div>
+    </div>
+    <div class="share-actions">
+      <button class="btn green" id="downloadShare">DESCARGAR IMAGEN</button>
+      <button class="btn" id="nativeShare">COMPARTIR</button>
+      <button class="btn" id="closeShare2">CERRAR</button>
+    </div>
+  </div>
+</div>
+
+<div id="adminOverlay" class="admin-overlay">
+<div class="admin-modal">
+<button class="close" id="closeAdmin">×</button>
+<div id="loginBox">
+<h2>Administrador</h2><p>Ingresá el correo y contraseña del administrador.</p>
+<input id="adminEmail" type="email" placeholder="Correo del administrador" autocomplete="username" style="max-width:350px">
+<input id="adminPass" type="password" placeholder="Contraseña" autocomplete="current-password" style="max-width:350px">
+<br><button class="btn" onclick="login()">INGRESAR</button>
+</div>
+
+<div id="adminArea" style="display:none">
+<h2>Panel administrador</h2><div class="notice" id="firebaseAdminNotice">Firebase: conectando…</div>
+<div class="admin-tabs">
+<button class="tab active" data-panel="datos">Datos</button><button class="tab" data-panel="numeracion">Numeración</button><button class="tab" data-panel="precios">Precios</button><button class="tab" data-panel="premios">Premios</button><button class="tab" data-panel="descargas">Descargas</button><button class="tab" data-panel="password">Contraseña</button><button class="tab" data-panel="redes">Link y QR</button><button class="tab" data-panel="estados">Estados</button>
+</div>
+
+<div id="datos" class="panel active"><h3>Datos del sorteo</h3><div class="grid">
+<label>Número<input id="adminNumber" value="001"></label><label>Título<input id="adminTitle" value="Gran Sorteo"></label><label>Descripción<input id="adminDescription" value="Acá se informa cuándo y cómo se realiza el sorteo."></label><label>WhatsApp<input id="adminWhatsapp" value="5493510000000"></label>
+<label style="grid-column:1/-1">Mensaje de WhatsApp<textarea id="adminWhatsappMessage" rows="6">Hola! Quiero reservar los números {NUMEROS} del Sorteo {SORTEO}.
+
+Nombre: {NOMBRE} {APELLIDO}
+DNI: {DNI}
+Teléfono: {TELEFONO}
+Total a pagar: {TOTAL}
+
+Quedo atento/a a los datos para realizar el pago. ¡Gracias!</textarea></label>
+<div class="hint" style="grid-column:1/-1">Variables disponibles: {SORTEO}, {NUMEROS}, {NOMBRE}, {APELLIDO}, {DNI}, {TELEFONO}. Se reemplazan automáticamente al reservar.</div>
+</div><button class="btn change">GUARDAR CAMBIOS</button></div>
+
+
+<div id="numeracion" class="panel">
+<h3>Programación de números</h3>
+<p>Acá definimos cómo se genera la numeración del sorteo.</p>
+<div class="grid">
+<label>Cantidad total de números<input id="numberTotal" type="number" min="1" value="10000"></label>
+<label>Número inicial<input id="numberStart" type="number" min="0" value="0"></label>
+<label>Número final<input id="numberEnd" type="number" min="0" value="9999"></label>
+<label>Cantidad de dígitos / formato<input id="numberDigits" type="number" min="1" max="8" value="4"></label>
+<label>Prefijo (opcional)<input id="numberPrefix" placeholder="Ej. A-"></label>
+<label>Máximo por compra<input id="numberMaxPurchase" type="number" min="1" value="10"></label>
+<label>Tiempo de reserva (minutos)<input id="numberHoldMinutes" type="number" min="1" value="360"></label>
+</div>
+</div>
+<div class="notice">Ejemplo con 4 dígitos: 0000, 0001, 0002 ... 9999. En Firebase esta configuración será la que determine los números reales del sorteo.</div>
+<button class="btn change" id="saveNumberConfig">GUARDAR CONFIGURACIÓN DE NUMERACIÓN</button><button class="btn" id="initializeFirebaseRaffle" style="margin-top:10px">CREAR / SINCRONIZAR SORTEO EN FIREBASE</button><div class="hint">La sincronización crea la configuración y, si todavía no existen, genera los números en Firestore sin sobrescribir estados existentes.</div>
+</div>
+
+<div id="precios" class="panel"><h3>Precios</h3><p>Configurá el precio exacto según la cantidad de números que compre el cliente.</p><div id="priceTiers"></div><button class="btn" id="addPriceTier">+ AGREGAR PRECIO</button><button class="btn change" id="savePrices">GUARDAR PRECIOS</button></div>
+
+<div id="premios" class="panel"><h3>Premios</h3><p>Agregá todos los premios que quieras.</p><div id="prizeList"></div><button id="addPrize" class="btn">+ AGREGAR PREMIO</button><button class="btn change">GUARDAR PREMIOS</button></div>
+
+
+<div id="descargas" class="panel"><h3>Descargar información acumulada</h3><p>Desde acá podés descargar la información del sorteo para trabajarla en Excel.</p><div class="grid"><button class="btn" id="downloadNumbers">TODOS LOS NÚMEROS</button><button class="btn" id="downloadBuyers">COMPRADORES Y RESERVAS</button><button class="btn" id="downloadSold">NÚMEROS VENDIDOS</button><button class="btn" id="downloadComplete">INFORMACIÓN COMPLETA</button></div></div>
+
+<div id="password" class="panel"><h3>Cambiar contraseña</h3><div class="grid"><label>Actual<input type="password"></label><label>Nueva<input type="password"></label><label>Repetir<input type="password"></label></div><button class="btn change">CAMBIAR CONTRASEÑA</button></div>
+
+<div id="redes" class="panel"><h3>Link y QR</h3><input id="raffleLink" readonly><br><button class="btn change" onclick="copyLink()">COPIAR LINK</button><button class="btn change">DESCARGAR QR</button><div class="qr">QR</div></div>
+
+<div id="estados" class="panel"><h3>Estados de los números</h3><p>Revisá los números reservados, verificá si fueron abonados y decidí si pasan a VENDIDO o vuelven a LIBRE. Las reservas vencidas se liberan automáticamente.</p><div class="stats"><div class="stat">LIBRES<b id="stateFreeCount">0</b></div><div class="stat">RESERVADOS<b id="stateReservedCount">0</b></div><div class="stat">VENDIDOS<b id="stateSoldCount">0</b></div></div><div class="grid" style="margin-top:14px"><label>Número<input id="stateNumber" maxlength="4" placeholder="0001"></label><label>Estado<select id="state"><option value="free">LIBRE</option><option value="reserved">RESERVADO</option><option value="sold">VENDIDO</option></select></label></div><button class="btn red change" id="changeStateBtn">CAMBIAR ESTADO</button><div id="reservedStateList"></div></div>
+</div></div></div>
+
+<div class="footer-legal"><button id="openLegal">Bases y condiciones</button></div>
+<div id="legalOverlay" class="legal-overlay"><div class="legal-box"><button class="close" id="closeLegal">×</button><h2>Bases y condiciones</h2><p>Este espacio queda preparado para cargar las bases y condiciones oficiales del sorteo.</p><ul><li>La participación y las condiciones de pago se regirán por las bases publicadas por el organizador.</li><li>Los números reservados se mantienen bloqueados durante el tiempo configurado, salvo que sean abonados antes.</li><li>Las reservas no abonadas se liberan automáticamente una vez vencido el plazo.</li><li>La información definitiva del sorteo deberá ser completada por el organizador antes de publicarlo.</li></ul></div></div>
+
+<script type="module" src="./firebase.js"></script>
+<script>
+window.addEventListener('firebase-ready',(ev)=>{
+  const status=document.getElementById('firebaseStatus');
+  const text=document.getElementById('firebaseStatusText');
+  const notice=document.getElementById('firebaseAdminNotice');
+  if(status){status.classList.add('ready');text.textContent='Firebase conectado';}
+  if(notice) notice.textContent='Firebase conectado · Firestore y autenticación disponibles.';
+  ev.detail.onAuthStateChanged(ev.detail.auth, user=>{
+    if(user){
+      window.firebaseAdminUser=user;
+      if(notice) notice.textContent='Administrador autenticado · Firebase listo.';
+    } else {
+      window.firebaseAdminUser=null;
+    }
+  });
+});
+window.addEventListener('error',(e)=>{
+  if(String(e.message||'').toLowerCase().includes('firebase')){
+    const status=document.getElementById('firebaseStatus');
+    const text=document.getElementById('firebaseStatusText');
+    if(status){status.classList.add('error');text.textContent='Error de Firebase';}
+  }
+});
+const HOLD_DEFAULT_MINUTES=360;
+const state={};
+const reservationMeta={};
+for(let i=0;i<10000;i++){state[i]=i%997===0?'sold':(i%991===0?'reserved':'free'); if(state[i]==='reserved') reservationMeta[i]={reservedAt:Date.now(),expiresAt:Date.now()+HOLD_DEFAULT_MINUTES*60000,name:'Demo',last:'Reserva',dni:'',phone:''};}
+const numbers=document.getElementById('numbers');
+for(let i=0;i<10000;i++){
+  const b=document.createElement('button'); b.className='num '+state[i]; b.textContent=String(i).padStart(4,'0'); b.dataset.n=i;
+  b.onclick=()=>{
+    const n=Number(b.dataset.n); const s=state[n];
+    if(s==='free'){
+      const selectedCount=numbers.querySelectorAll('.selected').length;
+      if(selectedCount>=10){
+        alert('Solo se pueden seleccionar 10 números por transacción.');
+        return;
+      }
+      state[n]='selected'; b.className='num selected';
+    }
+    else if(s==='selected'){ state[n]='free'; b.className='num free'; }
+    updateSelected(); updatePurchaseTotal();
+  }; numbers.appendChild(b);
+}
+function getNumberEl(n){return [...numbers.children].find(x=>Number(x.dataset.n)===Number(n));}
+function getStatus(n){return state[n]||'free';}
+function render(filter='all',query=''){
+  [...numbers.children].forEach(b=>{
+    const s=getStatus(b.dataset.n), q=b.textContent.includes(query);
+    b.style.display=(q&&(filter==='all'||s===filter||(s==='selected'&&filter==='free')))?'':'none';
+    b.className='num '+s;
+  });
+}
+function updateSelected(){document.getElementById('selectedList').textContent=[...numbers.querySelectorAll('.selected')].map(x=>x.textContent).join(', ')||'Ninguno';}
+document.querySelectorAll('.filter').forEach(x=>x.onclick=()=>{document.querySelectorAll('.filter').forEach(y=>y.classList.remove('active'));x.classList.add('active');render(x.dataset.filter,document.getElementById('search').value)});
+document.getElementById('search').oninput=e=>render(document.querySelector('.filter.active').dataset.filter,e.target.value);
+function triple(message){for(let i=1;i<=3;i++)if(!confirm('CONFIRMACIÓN '+i+' DE 3\n\n'+message+'\n\n¿Estás seguro?'))return false;return true}
+async function login(){
+  const email=document.getElementById('adminEmail').value.trim();
+  const password=document.getElementById('adminPass').value;
+  if(!email||!password)return alert('Ingresá el correo y la contraseña.');
+  try{
+    await window.sorteosFirebase.adminLogin(email,password);
+    loginBox.style.display='none'; adminArea.style.display='block'; refreshAdmin(); renderStates();
+  }catch(e){ console.error(e); alert('No se pudo iniciar sesión. Verificá el correo y la contraseña.'); }
+}
+document.getElementById('adminTrigger').onclick=()=>{adminOverlay.classList.add('open');document.getElementById('adminEmail').focus()};
+document.getElementById('closeAdmin').onclick=()=>adminOverlay.classList.remove('open');
+adminOverlay.onclick=e=>{if(e.target===adminOverlay)adminOverlay.classList.remove('open')};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){adminOverlay.classList.remove('open');legalOverlay.classList.remove('open')}});
+
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active'); document.getElementById(t.dataset.panel).classList.add('active');
+  if(t.dataset.panel==='consulta'||t.dataset.panel==='estados') { refreshAdmin(); renderStates(); }
+});
+
+function refreshAdmin(){
+  let a=0,r=0,s=0; const box=document.getElementById('adminNumbers'); box.innerHTML='';
+  for(let i=0;i<10000;i++){
+    const st=getStatus(i); if(st==='free')a++; if(st==='reserved')r++; if(st==='sold')s++;
+    const x=document.createElement('span'); x.className='badge '+(st==='reserved'?'reserved':st==='sold'?'sold':''); x.textContent=String(i).padStart(4,'0'); box.appendChild(x);
+  }
+  freeCount.textContent=a; reservedCount.textContent=r; soldCount.textContent=s;
+  stateFreeCount.textContent=a; stateReservedCount.textContent=r; stateSoldCount.textContent=s;
+}
+
+function changeState(){
+  const n=parseInt(stateNumber.value,10); if(!Number.isInteger(n)||n<0||n>9999)return alert('Número inválido');
+  if(!triple('Cambiar el estado del número '+String(n).padStart(4,'0')))return;
+  const next=document.getElementById('state').value; state[n]=next;
+  if(next==='reserved'){reservationMeta[n]=reservationMeta[n]||{reservedAt:Date.now(),expiresAt:Date.now()+getHoldMinutes()*60000,name:'',last:'',dni:'',phone:''};}
+  else delete reservationMeta[n];
+  const el=getNumberEl(n); if(el)el.className='num '+next;
+  refreshAdmin(); renderStates(); render(document.querySelector('.filter.active')?.dataset.filter||'all',document.getElementById('search').value);
+}
+document.getElementById('changeStateBtn').onclick=changeState;
+
+function getHoldMinutes(){return Number(document.getElementById('numberHoldMinutes')?.value)||HOLD_DEFAULT_MINUTES;}
+function formatDate(ts){return ts?new Date(ts).toLocaleString('es-AR',{dateStyle:'short',timeStyle:'short'}):'—';}
+function formatRemaining(ms){if(ms<=0)return 'Vencida';const m=Math.floor(ms/60000),s=Math.floor((ms%60000)/1000);return `${m}m ${String(s).padStart(2,'0')}s`;}
+function releaseNumber(n,ask=true){
+  if(ask&&!triple('Liberar el número '+String(n).padStart(4,'0')+' porque no fue abonado'))return false;
+  state[n]='free'; delete reservationMeta[n]; const el=getNumberEl(n); if(el)el.className='num free'; return true;
+}
+function markSold(n,ask=true){
+  if(ask&&!triple('Marcar el número '+String(n).padStart(4,'0')+' como VENDIDO'))return false;
+  state[n]='sold'; delete reservationMeta[n]; const el=getNumberEl(n); if(el)el.className='num sold'; return true;
+}
+function renderStates(){
+  const box=document.getElementById('reservedStateList'); if(!box)return;
+  const reserved=[]; for(let i=0;i<10000;i++)if(state[i]==='reserved')reserved.push(i);
+  let html='<h4 style="margin-top:22px">Reservas activas</h4>';
+  if(!reserved.length){html+='<p class="hint">No hay números reservados actualmente.</p>';box.innerHTML=html;return;}
+  html+='<div style="overflow:auto"><table class="state-table"><thead><tr><th>Número</th><th>Comprador</th><th>DNI</th><th>Teléfono</th><th>Reservado</th><th>Vence</th><th>Tiempo restante</th><th>Acciones</th></tr></thead><tbody>';
+  for(const n of reserved){
+    const m=reservationMeta[n]||{}; const buyer=((m.name||'')+' '+(m.last||'')).trim()||'Sin datos';
+    html+=`<tr><td><strong>${String(n).padStart(4,'0')}</strong></td><td>${escapeHtml(buyer)}</td><td>${escapeHtml(m.dni||'—')}</td><td>${escapeHtml(m.phone||'—')}</td><td>${formatDate(m.reservedAt)}</td><td>${formatDate(m.expiresAt)}</td><td class="countdown" data-countdown="${n}">${formatRemaining((m.expiresAt||0)-Date.now())}</td><td><div class="state-actions"><button class="btn" data-action="sold" data-number="${n}">MARCAR VENDIDO</button><button class="btn red" data-action="release" data-number="${n}">LIBERAR</button></div></td></tr>`;
+  }
+  html+='</tbody></table></div>'; box.innerHTML=html;
+  box.querySelectorAll('[data-action]').forEach(btn=>btn.onclick=()=>{const n=Number(btn.dataset.number);const ok=btn.dataset.action==='sold'?markSold(n):releaseNumber(n);if(ok){refreshAdmin();renderStates();render(document.querySelector('.filter.active')?.dataset.filter||'all',document.getElementById('search').value)}});
+}
+function escapeHtml(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+function expireReservations(){
+  const now=Date.now(); let changed=false;
+  for(const k of Object.keys(reservationMeta)){
+    const n=Number(k), m=reservationMeta[n];
+    if(state[n]==='reserved' && m.expiresAt && now>=m.expiresAt){state[n]='free';delete reservationMeta[n];const el=getNumberEl(n);if(el)el.className='num free';changed=true;}
+  }
+  if(changed){refreshAdmin();renderStates();render(document.querySelector('.filter.active')?.dataset.filter||'all',document.getElementById('search').value)}
+  document.querySelectorAll('[data-countdown]').forEach(x=>{const m=reservationMeta[Number(x.dataset.countdown)];x.textContent=m?formatRemaining(m.expiresAt-Date.now()):'—'});
+}
+setInterval(expireReservations,1000);
+
+function copyLink(){navigator.clipboard?.writeText(location.href);alert('Link copiado')}
+raffleLink.value=location.href;
+function showShareBanner(selected){document.getElementById('shareTitle').textContent=adminTitle.value||'Gran Sorteo';document.getElementById('shareDescription').textContent=adminDescription.value||'';document.getElementById('shareNumbers').textContent='Números reservados: '+selected.join(', ');document.getElementById('shareOverlay').classList.add('open')}
+
+function syncPublicData(){
+  const title=adminTitle.value||'Gran Sorteo', num=adminNumber.value||'001', desc=adminDescription.value||'';
+  publicTitle.textContent=title; publicDescription.textContent=desc; document.querySelector('.status-pill').innerHTML='<span></span> SORTEO NÚMERO '+num; shareTitle.textContent=title; shareDescription.textContent=desc;
+}
+document.querySelectorAll('#datos .change').forEach(btn=>btn.addEventListener('click',()=>{if(triple('Guardar los datos generales del sorteo'))syncPublicData()}));
+
+const prizeList=document.getElementById('prizeList');
+function addPrize(){const d=document.createElement('div');d.className='admin-prize';d.innerHTML='<div class="grid"><label>Título<input placeholder="Ej. Primer premio"></label><label>Imagen<input type="file" accept="image/*"></label></div><label style="display:block;margin-top:10px">Breve descripción<textarea rows="3" placeholder="Descripción"></textarea></label><button type="button" class="btn red remove">ELIMINAR</button>';prizeList.appendChild(d)}
+addPrize();addPrize();addPrize();document.getElementById('addPrize').onclick=()=>{addPrize()};
+function syncPublicPrizes(){
+ const items=[...document.querySelectorAll('#prizeList .admin-prize')].map((d,i)=>({title:d.querySelector('input')?.value||['Primer premio','Segundo premio','Tercer premio'][i]||('Premio '+(i+1)),desc:d.querySelector('textarea')?.value||''}));
+ const base=document.querySelectorAll('#publicPrizes .prize'); items.slice(0,3).forEach((p,i)=>{if(base[i]){base[i].querySelector('h3').textContent=p.title;base[i].querySelector('p').textContent=p.desc}});
+ const extra=document.getElementById('extraPrizes');extra.innerHTML='';items.slice(3).forEach((p,i)=>{const d=document.createElement('div');d.className='prize';d.innerHTML='<div class="prize-img">IMAGEN DEL PREMIO</div><div class="prize-body"><span class="podium-rank">🏆 PREMIO '+(i+4)+'</span><h3></h3><p></p></div>';d.querySelector('h3').textContent=p.title;d.querySelector('p').textContent=p.desc;extra.appendChild(d)});
+}
+prizeList.onclick=e=>{if(e.target.classList.contains('remove')){if(triple('Eliminar este premio'))e.target.closest('.admin-prize').remove()}};
+
+const defaultPriceTiers=[{qty:1,price:1000},{qty:2,price:1800},{qty:3,price:2500},{qty:5,price:4000},{qty:10,price:7000}];
+function addPriceTierRow(data={qty:1,price:0}){const wrap=document.getElementById('priceTiers');const row=document.createElement('div');row.className='pricing-row';row.innerHTML=`<label style="margin:0">Cantidad de números<input class="price-qty" type="number" min="1" step="1" value="${data.qty}"></label><label style="margin:0">Precio<input class="price-value" type="number" min="0" step="100" value="${data.price}"></label><button type="button" class="btn remove-price">ELIMINAR</button>`;wrap.appendChild(row);row.querySelector('.remove-price').onclick=()=>{if(triple('Eliminar este precio')){row.remove();updatePurchaseTotal()}};row.querySelectorAll('input').forEach(i=>i.addEventListener('input',updatePurchaseTotal))}
+defaultPriceTiers.forEach(addPriceTierRow);document.getElementById('addPriceTier').onclick=()=>addPriceTierRow();
+function getPriceTiers(){return [...document.querySelectorAll('#priceTiers .pricing-row')].map(r=>({qty:Number(r.querySelector('.price-qty').value)||0,price:Number(r.querySelector('.price-value').value)||0})).filter(x=>x.qty>0).sort((a,b)=>a.qty-b.qty)}
+function calculatePurchaseTotal(qty){const t=getPriceTiers().find(x=>x.qty===qty);return t?t.price:0}
+function formatMoney(v){return new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0}).format(v||0)}
+function updatePurchaseTotal(){const qty=numbers.querySelectorAll('.selected').length,total=calculatePurchaseTotal(qty);purchaseTotal.textContent=qty?formatMoney(total):'$ 0';reserve.disabled=!!qty&&!total}
+
+reserve.onclick=()=>{
+ const selected=[...numbers.querySelectorAll('.selected')].map(x=>x.textContent); if(!selected.length)return alert('Seleccioná al menos un número');
+ const max=Math.min(Number(numberMaxPurchase.value)||10,10);if(selected.length>10)return alert('Solo se pueden seleccionar 10 números por transacción.');if(selected.length>max)return alert('La cantidad seleccionada supera el máximo permitido por compra.');
+ const total=calculatePurchaseTotal(selected.length);if(!total)return alert('No hay un precio configurado para esa cantidad de números.');
+ if(!name.value.trim()||!last.value.trim()||!dni.value.trim()||!phone.value.trim())return alert('Completá todos tus datos antes de reservar.');
+ const now=Date.now(),expires=now+getHoldMinutes()*60000;
+ selected.forEach(txt=>{const n=Number(txt);state[n]='reserved';reservationMeta[n]={reservedAt:now,expiresAt:expires,name:name.value.trim(),last:last.value.trim(),dni:dni.value.trim(),phone:phone.value.trim()};const el=getNumberEl(n);el.className='num reserved'});
+ const template=adminWhatsappMessage.value||`Hola! Quiero reservar los números {NUMEROS} del Sorteo {SORTEO}.\n\nNombre: {NOMBRE} {APELLIDO}\nDNI: {DNI}\nTeléfono: {TELEFONO}\nTotal a pagar: {TOTAL}`;
+ const msg=template.replaceAll('{SORTEO}',adminNumber.value||'001').replaceAll('{NUMEROS}',selected.join(', ')).replaceAll('{NOMBRE}',name.value.trim()).replaceAll('{APELLIDO}',last.value.trim()).replaceAll('{DNI}',dni.value.trim()).replaceAll('{TELEFONO}',phone.value.trim()).replaceAll('{TOTAL}',formatMoney(total));
+ const wa=(adminWhatsapp.value||'5493510000000').replace(/\D/g,'');window.open('https://wa.me/'+wa+'?text='+encodeURIComponent(msg),'_blank');
+ showShareBanner(selected);updateSelected();updatePurchaseTotal();refreshAdmin();renderStates();
+};
+
+closeShare.onclick=()=>shareOverlay.classList.remove('open');closeShare2.onclick=()=>shareOverlay.classList.remove('open');shareOverlay.onclick=e=>{if(e.target.id==='shareOverlay')e.currentTarget.classList.remove('open')};
+async function makeShareImage(){const card=shareCard,w=1200,h=Math.max(700,Math.round(card.offsetHeight*1200/card.offsetWidth)),c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');const g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,'#111827');g.addColorStop(.55,'#312e81');g.addColorStop(1,'#111827');ctx.fillStyle=g;ctx.fillRect(0,0,w,h);ctx.textAlign='center';ctx.fillStyle='#c7d2fe';ctx.font='800 28px Inter';ctx.fillText('SORTEO NÚMERO '+(adminNumber.value||'001'),w/2,110);ctx.fillStyle='#fff';ctx.font='800 64px Outfit';ctx.fillText(shareTitle.textContent,w/2,190);ctx.fillStyle='#dbeafe';ctx.font='28px Inter';ctx.fillText(shareNumbers.textContent,w/2,300);ctx.fillStyle='#cbd5e1';ctx.font='20px Inter';ctx.fillText('SORTEOS CÓRDOBA · Guardá esta imagen como comprobante',w/2,h-55);return await new Promise(r=>c.toBlob(r,'image/png'))}
+downloadShare.onclick=async()=>{const blob=await makeShareImage();const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='reserva-sorteo-'+(adminNumber.value||'001')+'.png';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
+nativeShare.onclick=async()=>{const blob=await makeShareImage();if(navigator.share&&navigator.canShare){const file=new File([blob],'reserva.png',{type:'image/png'});if(navigator.canShare({files:[file]})){await navigator.share({title:'Mi reserva - Sorteos Córdoba',text:'Mi reserva del sorteo.',files:[file]});return}}alert('Tu navegador no permite compartir archivos directamente. Usá DESCARGAR IMAGEN.')};
+
+function records(){const out=[];for(let i=0;i<10000;i++){if(state[i]==='reserved'||state[i]==='sold'){const m=reservationMeta[i]||{};out.push({number:String(i).padStart(4,'0'),state:state[i],name:m.name||'',last:m.last||'',dni:m.dni||'',phone:m.phone||'',reservedAt:m.reservedAt||'',expiresAt:m.expiresAt||''})}}return out}
+function csvDownload(filename,rows){const csv=rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\r\n');const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function downloadAllNumbers(){const rows=[['Número','Estado']];for(let i=0;i<10000;i++)rows.push([String(i).padStart(4,'0'),state[i].toUpperCase()]);csvDownload('numeros-sorteo.csv',rows)}
+function downloadBuyers(){const rows=[['Comprador','Apellido','DNI','Teléfono','Número','Estado','Reservado','Vence']];records().forEach(r=>rows.push([r.name,r.last,r.dni,r.phone,r.number,r.state==='sold'?'VENDIDO':'RESERVADO',r.reservedAt?formatDate(r.reservedAt):'',r.expiresAt?formatDate(r.expiresAt):'']));csvDownload('compradores-y-reservas.csv',rows)}
+function downloadSold(){const rows=[['Comprador','Apellido','DNI','Teléfono','Número','Estado']];records().filter(r=>r.state==='sold').forEach(r=>rows.push([r.name,r.last,r.dni,r.phone,r.number,'VENDIDO']));csvDownload('numeros-vendidos.csv',rows)}
+function downloadComplete(){const rows=[['Número','Estado','Nombre','Apellido','DNI','Teléfono','Reservado','Vence']];for(let i=0;i<10000;i++){const m=reservationMeta[i]||{};rows.push([String(i).padStart(4,'0'),state[i].toUpperCase(),m.name||'',m.last||'',m.dni||'',m.phone||'',m.reservedAt?formatDate(m.reservedAt):'',m.expiresAt?formatDate(m.expiresAt):''])}csvDownload('informacion-completa-sorteo.csv',rows)}
+downloadNumbers.onclick=()=>{if(triple('Descargar todos los números'))downloadAllNumbers()};downloadBuyers.onclick=()=>{if(triple('Descargar compradores y reservas'))downloadBuyers()};downloadSold.onclick=()=>{if(triple('Descargar números vendidos'))downloadSold()};downloadComplete.onclick=()=>{if(triple('Descargar la información completa'))downloadComplete()};
+
+openLegal.onclick=()=>legalOverlay.classList.add('open');closeLegal.onclick=()=>legalOverlay.classList.remove('open');legalOverlay.onclick=e=>{if(e.target===legalOverlay)legalOverlay.classList.remove('open')};
+
+// Triple confirmation for every administrative save/change button in this prototype.
+// Buttons that already execute their own triple confirmation are excluded.
+const adminChangeButtons=[...document.querySelectorAll('#adminOverlay .change')].filter(b=>!['changeStateBtn','savePrices'].includes(b.id));
+adminChangeButtons.forEach(btn=>{btn.addEventListener('click',e=>{
+  if(btn.dataset.confirmed==='1')return;
+  e.preventDefault();e.stopImmediatePropagation();
+  const ok=triple(btn.textContent.trim()||'Aplicar este cambio');
+  if(!ok)return;
+  btn.dataset.confirmed='1';btn.click();delete btn.dataset.confirmed;
+},true)});
+
+async function requireAdmin(){
+  if(!window.sorteosFirebase?.currentUser()) { alert('Iniciá sesión como administrador.'); return false; }
+  return true;
+}
+function raffleConfigFromForm(){return {
+  raffleNumber: adminNumber.value.trim(), title: adminTitle.value.trim(), description: adminDescription.value.trim(),
+  whatsapp: adminWhatsapp.value.trim(), whatsappMessage: adminWhatsappMessage.value,
+  numberStart: Number(numberStart.value)||0, numberEnd: Number(numberEnd.value)||9999,
+  numberDigits: Number(numberDigits.value)||4, numberPrefix: numberPrefix.value||'',
+  maxPerPurchase: Math.min(Number(numberMaxPurchase.value)||10,10), reservationMinutes: Number(numberHoldMinutes.value)||360,
+  updatedAt: Date.now(), active: true
+};}
+
+document.querySelector('#datos .change').onclick=async()=>{
+  if(!triple('Guardar los datos del sorteo'))return;
+  if(!await requireAdmin())return;
+  try{await window.sorteosFirebase.saveRaffleConfig(raffleConfigFromForm()); alert('Datos guardados en Firebase.');}
+  catch(e){console.error(e);alert('No se pudieron guardar los datos en Firebase.');}
+};
+
+document.getElementById('saveNumberConfig').onclick=async()=>{
+  if(!triple('Guardar la configuración de numeración'))return;
+  if(!await requireAdmin())return;
+  const start=Number(numberStart.value), end=Number(numberEnd.value), digits=Number(numberDigits.value)||4;
+  if(end<start)return alert('El número final debe ser mayor o igual al inicial.');
+  try{await window.sorteosFirebase.saveRaffleConfig(raffleConfigFromForm()); alert('Configuración de numeración guardada en Firebase.');}
+  catch(e){console.error(e);alert('No se pudo guardar la numeración.');}
+};
+
+document.getElementById('initializeFirebaseRaffle').onclick=async()=>{
+  if(!triple('Crear/sincronizar el sorteo y generar los números en Firebase'))return;
+  if(!await requireAdmin())return;
+  const start=Number(numberStart.value), end=Number(numberEnd.value), digits=Number(numberDigits.value)||4;
+  if(end<start)return alert('El número final debe ser mayor o igual al inicial.');
+  if(end-start+1>20000)return alert('Para esta primera sincronización el máximo es 20.000 números.');
+  try{
+    await window.sorteosFirebase.saveRaffleConfig(raffleConfigFromForm());
+    const result=await window.sorteosFirebase.initializeNumbers({start,end,digits,prefix:numberPrefix.value||''});
+    alert(result.skipped ? result.message : `Sorteo creado en Firebase. Se generaron ${result.created} números.`);
+  }catch(e){console.error(e);alert('No se pudo crear/sincronizar el sorteo en Firebase.');}
+};
+
+document.getElementById('savePrices').onclick=async()=>{
+  if(!triple('Guardar la configuración de precios'))return;
+  if(!await requireAdmin())return;
+  try{const tiers=getPriceTiers(); await window.sorteosFirebase.savePrices(tiers); updatePurchaseTotal(); alert('Precios guardados en Firebase.');}
+  catch(e){console.error(e);alert('No se pudieron guardar los precios.');}
+};
+
+const originalSavePrizes=document.querySelector('#premios .change');
+originalSavePrizes.onclick=async()=>{
+  if(!triple('Guardar los premios'))return;
+  if(!await requireAdmin())return;
+  try{syncPublicPrizes(); const items=[...document.querySelectorAll('#prizeList .admin-prize')].map((d,i)=>({title:d.querySelector('input')?.value||['Primer premio','Segundo premio','Tercer premio'][i]||('Premio '+(i+1)),desc:d.querySelector('textarea')?.value||''})); await window.sorteosFirebase.savePrizes(items); alert('Premios guardados en Firebase.');}
+  catch(e){console.error(e);alert('No se pudieron guardar los premios.');}
+};
+
+refreshAdmin();updateSelected();updatePurchaseTotal();render();renderStates();
+</script>
+</body></html>
